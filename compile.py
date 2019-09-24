@@ -63,8 +63,8 @@ def add_additional_values_in_row(row, filename):
     d1, d2 = [datetime.datetime.strptime(d, "%Y%m%d") for d in (d1, d2)]
     week = d2.strftime("%V")
     is_week = f'{d1.year}{week}'
-    if week == '01':
-        is_week = f'{d2.year}{week}'  # TODO Comment here
+    if week == '01':  # If date_from is in previous year, but week started as first week in next year
+        is_week = f'{d2.year}{week}'
     row.update({
         "From": d1.strftime("%Y.%m.%d"),
         "To": d2.strftime("%Y.%m.%d"),

@@ -143,19 +143,6 @@ def wait_cookies(download_dir):
     browser.close()
 
 
-def _test(urls, download_dir):
-    import os
-    import shutil
-    folder = os.path.join(os.getcwd(), "GA_test")
-    c = 1
-    # print(os.listdir(folder))
-    print(folder)
-    for file in os.listdir(folder):
-        print("Copy file:", file, "\tto:", download_dir)
-        shutil.copyfile(os.path.join(folder, file), os.path.join(download_dir, file))
-        c += 1
-
-
 if __name__ == '__main__':
     # log_in__google("analytics@delvepartners.com", "R]q(0Q7F?RvCF\-J")
     # save_cookies()
