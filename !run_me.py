@@ -1,5 +1,5 @@
 from check_csv_and_url import get_undownloaded_urls
-from compile import csv_out_gen_sum, csv_out_gen_increment
+from compile import csv_out_gen_sum, csv_out_gen_increment, csv_out_uniq_line_items
 from sel_new import BrowserScenario
 from settings import *
 from url_generator import generate_urls
@@ -32,3 +32,4 @@ if __name__ == '__main__':
         csv_out_gen_sum(FOLDER_NAME, FILTERS)
     else:
         csv_out_gen_increment(FOLDER_NAME, FILTERS)
+    csv_out_uniq_line_items(FOLDER_NAME, FILTERS)

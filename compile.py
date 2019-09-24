@@ -30,7 +30,28 @@ def get_outcsv_filename(download_folder):
     return out_csv_path
 
 
+def get_line_items_filename(download_folder):
+    return get_outcsv_filename(download_folder).replace(".csv", "_line_items.csv")  # TODO Danger, '.csv' can be in path
+
+
+def csv_out_uniq_line_items(download_folder, filters):
+    files_gen = csv_out_gen_rows(download_folder, filters)
+    uniq_li = set()
+    next(files_gen)  # Skip headers
+    for file, filename in files_gen:
+        for line in file:
+            line_item = line.popitem(last=False)[1]
+            uniq_li.add(line_item)
+    uniq_li = list(uniq_li)
+    uniq_li.sort()
+    with open(get_line_items_filename(download_folder), 'wt', encoding='utf-8') as f:
+        f.writelines("\n".join(uniq_li))
+
+
 def filter_generator(filters):
+    if callable(filters):
+        filters = filters()
+
     def user_filter(iterator):
         for line in iterator:
             if line[:1] == '#':
@@ -99,7 +120,7 @@ def try_parse_default_values(row: csv.OrderedDict):
             yield col, str('-')
 
 
-def set_row_defaults(download_folder, filters: list):
+def set_row_defaults(download_folder, filters):
     files = csv_out_gen_rows(download_folder, filters)
     next(files)  # Skip header
     types = None
@@ -116,7 +137,7 @@ def avg_row_to_string_values(avg_row: csv.OrderedDict):
     return avg_row
 
 
-def csv_out_gen_increment(download_folder, filters: list):
+def csv_out_gen_increment(download_folder, filters):
     file_gen = csv_out_gen_rows(download_folder, filters)
     with open(get_outcsv_filename(download_folder), 'wt', newline="") as f:
         header = next(file_gen)
@@ -129,7 +150,7 @@ def csv_out_gen_increment(download_folder, filters: list):
                 csv_dict.writerow(row)
 
 
-def csv_out_gen_sum(download_folder, filters: list):
+def csv_out_gen_sum(download_folder, filters):
     file_gen = csv_out_gen_rows(download_folder, filters)
     types = set_row_defaults(download_folder, filters)
 
@@ -157,10 +178,4 @@ def csv_out_gen_sum(download_folder, filters: list):
 
 
 if __name__ == '__main__':
-    filters = [
-        "Last touch Imp Conversions,Last touch Imp Conversion Value,Last touch Click Conversions,Last touch Click Conversion Value,% Change in Conversions from Last touch Imp to Last touch Click"
-
-    ]
-    filters = [f + "\n" for f in filters]
-    # csv_out_gen_increment("GA_test_days", FILTERS)
-    csv_out_gen_sum("GA_test_days", filters)
+    pass
