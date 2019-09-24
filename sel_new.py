@@ -20,7 +20,7 @@ def set_profile(path):
     PROFILE_PATH = path
 
 
-def run_browser(download_dir, is_first_time):
+def run_browser(download_dir, is_authorization_needed):
     global browser
     fp = webdriver.FirefoxProfile(PROFILE_PATH)
     fp.set_preference('browser.download.folderList', 2)
@@ -42,7 +42,7 @@ def run_browser(download_dir, is_first_time):
     # browser = webdriver.Firefox(executable_path='../selenium_drv/geckodriver.exe')
     browser.implicitly_wait(10)
     browser.set_script_timeout(10)
-    if is_first_time:
+    if is_authorization_needed:
         browser.get("https://google.ru")
         load_cookies()
         browser.get("https://accounts.google.com/signin/v2")
@@ -129,8 +129,8 @@ def get_week_data(url):
             break
 
 
-def manage_weeks(urls, download_dir, is_first_time=False):
-    run_browser(download_dir, is_first_time)
+def manage_weeks(urls, download_dir, is_authorization_needed=False):
+    run_browser(download_dir, is_authorization_needed)
     for url in urls:
         get_week_data(url)
     browser.close()
