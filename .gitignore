@@ -1,6 +1,4 @@
-out/
-GA_test/
-GA_test_days
+out/*
 
 urls.txt
 cookies.pkl
