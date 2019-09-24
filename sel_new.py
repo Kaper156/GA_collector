@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 browser = None
+cookie_keeper = None
 
 PROFILE_PATH = " "
 
@@ -21,7 +22,7 @@ def set_profile(path):
 
 
 def run_browser(download_dir, is_authorization_needed):
-    global browser
+    global browser, cookie_keeper
     fp = webdriver.FirefoxProfile(PROFILE_PATH)
     fp.set_preference('browser.download.folderList', 2)
     fp.set_preference('browser.download.manager.showWhenStarting', False)
@@ -35,34 +36,44 @@ def run_browser(download_dir, is_authorization_needed):
     caps = DesiredCapabilities.FIREFOX.copy()
     caps["firefox_profile"] = fp.encoded
     caps["marionette"] = True
-
     browser = webdriver.Firefox(firefox_profile=fp, firefox_binary="C:/Program Files/Mozilla Firefox/firefox.exe",
                                 capabilities=caps,
                                 executable_path='../selenium_drv/geckodriver.exe')
     # browser = webdriver.Firefox(executable_path='../selenium_drv/geckodriver.exe')
     browser.implicitly_wait(10)
     browser.set_script_timeout(10)
+
+    cookie_keeper = CookieKeeper(browser)
     if is_authorization_needed:
         browser.get("https://google.ru")
-        load_cookies()
+        cookie_keeper.load_cookies()
         browser.get("https://accounts.google.com/signin/v2")
         input("Войдите на сайт и нажмите enter (Возможно куки уже загрузились, попробуйте перезагрузить страницу)")
-        save_cookies()
-    load_cookies()
+        cookie_keeper.save_cookies()
+    cookie_keeper.load_cookies()
 
 
 ANCHOR_LOADED = 'th.ACTION-sort'
 ANCHOR_NEXT = "li.ACTION-paginate:nth-of-type(2)"
 
 
-def save_cookies():
-    pickle.dump(browser.get_cookies(), open("cookies.pkl", "wb"))
+class CookieKeeper:
+    __file_path__ = ''
+    __browser__ = None
 
+    def __init__(self, browser: webdriver.Firefox, file_path="cookies.pkl"):
+        self.__browser__ = browser
+        self.__file_path__ = file_path
 
-def load_cookies():
-    cookies = pickle.load(open("cookies.pkl", "rb"))
-    for cookie in cookies:
-        browser.add_cookie(cookie)
+    def save_cookies(self):
+        with open(self.__file_path__, 'wb') as file:
+            pickle.dump(self.__browser__.get_cookies(), file)
+
+    def load_cookies(self):
+        with open(self.__file_path__, 'rb') as file:
+            cookies = pickle.load(file)
+            for cookie in cookies:
+                self.__browser__.add_cookie(cookie)
 
 
 def wait_for(target_css, timeout=15):
@@ -139,7 +150,7 @@ def manage_weeks(urls, download_dir, is_authorization_needed=False):
 def wait_cookies(download_dir):
     run_browser(download_dir, True)
     input("Нажмите enter, после авторизации")
-    save_cookies()
+    cookie_keeper.save_cookies()
     browser.close()
 
 
@@ -148,5 +159,5 @@ if __name__ == '__main__':
     # save_cookies()
     # exit()
     browser.get("https://analytics.google.com")
-    load_cookies()
+    cookie_keeper.load_cookies()
     # manage_weeks()
