@@ -5,21 +5,48 @@ import time
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, \
     StaleElementReferenceException, ElementNotInteractableException
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 browser = None
 
+PROFILE_PATH = " "
+
+
+def set_profile(path):
+    global PROFILE_PATH
+    PROFILE_PATH = path
+
 
 def run_browser(download_dir, is_first_time):
     global browser
-    browser = webdriver.Firefox(executable_path='../selenium_drv/geckodriver.exe')
+    fp = webdriver.FirefoxProfile(PROFILE_PATH)
+    fp.set_preference('browser.download.folderList', 2)
+    fp.set_preference('browser.download.manager.showWhenStarting', False)
+    fp.set_preference('browser.download.dir', download_dir)
+    fp.set_preference('browser.download.useDownloadDir', True)
+    fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
+                      'text/plain, application/vnd.ms-excel, text/csv, text/comma-separated-values, '
+                      'application/octet-stream, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    fp.update_preferences()
+
+    caps = DesiredCapabilities.FIREFOX.copy()
+    caps["firefox_profile"] = fp.encoded
+    caps["marionette"] = True
+
+    browser = webdriver.Firefox(firefox_profile=fp, firefox_binary="C:/Program Files/Mozilla Firefox/firefox.exe",
+                                capabilities=caps,
+                                executable_path='../selenium_drv/geckodriver.exe')
+    # browser = webdriver.Firefox(executable_path='../selenium_drv/geckodriver.exe')
     browser.implicitly_wait(10)
     browser.set_script_timeout(10)
     if is_first_time:
+        browser.get("https://google.ru")
+        load_cookies()
         browser.get("https://accounts.google.com/signin/v2")
-        input("Войдите на сайт и нажмите enter")
+        input("Войдите на сайт и нажмите enter (Возможно куки уже загрузились, попробуйте перезагрузить страницу)")
         save_cookies()
     load_cookies()
 

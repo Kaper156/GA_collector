@@ -4,12 +4,6 @@ from sel_new import manage_weeks
 from settings import *
 from url_generator import generate_urls
 
-# Настройка
-# Решетка "#" это знак комментария, поставь, чтобы функция не работала (пропусть функцию)
-
-
-# Настрой ЗДЕСЬ!!!
-# Решетка "#" это знак комментария, поставь, чтобы функция не работала (пропусть функцию)
 
 if __name__ == '__main__':
     # Генерирует ссылки в файл urls.txt
@@ -26,14 +20,14 @@ if __name__ == '__main__':
     with open("urls.txt", "rt") as f:
         urls = [l.strip() for l in f.readlines()]
 
-    # os.mkdir(FOLDER_NAME)
-    # wait_cookies(FOLDER_NAME)
-    # manage_weeks(urls[0], FOLDER_NAME)  # For set download_folder
-    # input("Нажмите энтер, после указания папки сохранения")
+    os.mkdir(FOLDER_NAME)
+    is_first_time = True
     while len(urls):
-        manage_weeks(urls, FOLDER_NAME, False)
+        manage_weeks(urls, FOLDER_NAME, is_first_time)
         urls = get_undownloaded_urls(urls, FOLDER_NAME)
-
+        is_first_time = False
+        break
+    exit()
     if AVG_CSV:
         csv_out_gen_sum(FOLDER_NAME, FILTERS)
     else:
