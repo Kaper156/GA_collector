@@ -4,7 +4,7 @@ import datetime
 import os
 from decimal import Decimal, DecimalException
 
-from check_csv_and_url import file_get_date
+from typical.check_csv_and_url import file_get_date
 
 ADDITIONAL_HEADERS = ["Week", "From", "To"]
 csv.register_dialect('ga',
