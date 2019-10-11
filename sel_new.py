@@ -13,6 +13,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 # css selectors
 ANCHOR_LOADED = 'th.ACTION-sort'
 ANCHOR_NEXT = "li.ACTION-paginate:nth-of-type(2)"
+URL_GOOGLE = ''
+URL_GOOGLE_LOGIN = 'https://accounts.google.com/signin/v2'
 
 
 class CookieKeeper:
@@ -32,7 +34,11 @@ class CookieKeeper:
             with open(self.__file_path__, 'rb') as file:
                 cookies = pickle.load(file)
                 for cookie in cookies:
-                    self.__browser__.add_cookie(cookie)
+                    from selenium.common.exceptions import InvalidCookieDomainException
+                    try:
+                        self.__browser__.add_cookie(cookie)
+                    except InvalidCookieDomainException:
+                        pass
         except (EOFError, FileNotFoundError) as ex:
             print("Cookie не найдены")
 
@@ -64,17 +70,17 @@ class BrowserScenario:
         caps["firefox_profile"] = fp.encoded
         caps["marionette"] = True
         self.browser = webdriver.Firefox(firefox_profile=fp, firefox_binary=self.__FIREFOX_BINARY_PATH__,
-                                    capabilities=caps,
-                                    executable_path=self.__GECKO_DRIVER_PATH__)
+                                         capabilities=caps,
+                                         executable_path=self.__GECKO_DRIVER_PATH__)
         self.browser.implicitly_wait(10)
         self.browser.set_script_timeout(10)
 
         self.cookie = CookieKeeper(self.browser)
         if self.is_authorization_needed:
-            self.browser.get("https://accounts.google.com/signin/v2")
+            self.browser.get(URL_GOOGLE_LOGIN)
             self.cookie.load_cookies()
             input("Войдите на сайт и нажмите enter (Возможно куки уже загрузились, попробуйте перезагрузить страницу)")
-            self.browser.get("https://accounts.google.com/signin/v2")
+            self.browser.get(URL_GOOGLE_LOGIN)
             self.cookie.save_cookies()
             self.is_authorization_needed = False
         self.cookie.load_cookies()
