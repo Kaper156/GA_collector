@@ -2,7 +2,7 @@ out/*
 
 urls.txt
 cookies.pkl
-settings.py
+!settings.py
 geckodriver.log
 filters.txt
 line_items.txt
