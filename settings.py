@@ -12,7 +12,7 @@ LW_AVG_FILE = 1
 
 LEVEL_WORK = LW_URLS
 
-BASE_URL = "https://analytics.google.com/analytics/web/?authuser=1#/report/bf-roi-calculator/"
+BASE_URL = "https://analytics.google.com/analytics/web/?authuser=1#/report/bf-roi-calculator"
 
 FROM_DATE = datetime.datetime.strptime(url_get_date(BASE_URL)[0], '%Y%m%d')
 # FROM_DATE = datetime.datetime(year=2018, month=8, day=1)
@@ -27,9 +27,13 @@ AVG_CSV = False
 
 
 def get_small_hash(value):
-    d = hashlib.md5(b"hello worlds").digest()
+    d = hashlib.md5(value.encode('utf-8')).digest()
     d = base64.b64encode(d)
-    return str(d.decode('utf-8'))[:10]
+    h = str(d.decode('utf-8'))[:10]
+    h = h.replace('/', '')
+    h = h.replace(',', '')
+    h = h.replace('\\', '')
+    return h
 
 
 # При остром желании поменяй FOLDER_NAME на любой путь, например:
