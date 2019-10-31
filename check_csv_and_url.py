@@ -1,5 +1,6 @@
 import os
 import re
+from time import sleep
 
 reURL = re.compile(r"(2\d{3}[0-1]\d[0-3]\d)(?:&|&amp;)_u\.date01=(2\d{3}[0-1]\d[0-3]\d)")
 reFILE = re.compile(r"(2\d{3}[0-1]\d[0-3]\d)-(2\d{3}[0-1]\d[0-3]\d)")
@@ -15,6 +16,7 @@ def file_get_date(filename):
 
 def get_undownloaded_urls(urls, download_dir):
     result = list()
+    sleep(3)
     file_dates = ([file_get_date(file) for file in os.listdir(download_dir)])
     for url in urls:
         if url_get_date(url) not in file_dates:
