@@ -115,7 +115,7 @@ class BrowserScenario:
                 print("Something is wrong third try save csv")
                 time.sleep(5)
             if count >= 3:
-                input()
+                input("Получил ошибку при попытке скачать csv")
 
             count += 1
             self.__get_page_data(count=count)
