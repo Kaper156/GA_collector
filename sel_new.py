@@ -13,8 +13,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 # css selectors
 ANCHOR_LOADED = 'th.ACTION-sort'
 ANCHOR_NEXT = "li.ACTION-paginate:nth-of-type(2)"
-URL_GOOGLE = ''
-URL_GOOGLE_LOGIN = 'https://accounts.google.com/signin/v2'
 
 
 class CookieKeeper:
@@ -34,13 +32,11 @@ class CookieKeeper:
             with open(self.__file_path__, 'rb') as file:
                 cookies = pickle.load(file)
                 for cookie in cookies:
-                    from selenium.common.exceptions import InvalidCookieDomainException
-                    try:
-                        self.__browser__.add_cookie(cookie)
-                    except InvalidCookieDomainException:
-                        pass
+                    self.__browser__.add_cookie(cookie)
+                return True
         except (EOFError, FileNotFoundError) as ex:
             print("Cookie не найдены")
+            return False
 
 
 class BrowserScenario:
@@ -77,11 +73,14 @@ class BrowserScenario:
 
         self.cookie = CookieKeeper(self.browser)
         if self.is_authorization_needed:
-            self.browser.get(URL_GOOGLE_LOGIN)
-            self.cookie.load_cookies()
-            input("Войдите на сайт и нажмите enter (Возможно куки уже загрузились, попробуйте перезагрузить страницу)")
-            self.browser.get(URL_GOOGLE_LOGIN)
-            self.cookie.save_cookies()
+
+            self.browser.get("https://myaccount.google.com")
+            if not self.cookie.load_cookies():
+                self.browser.get("https://accounts.google.com/signin/v2")
+                input("Войдите на сайт и нажмите enter:")
+                self.cookie.save_cookies()
+            else:
+                print("Куки успешно загрузились!")
             self.is_authorization_needed = False
         self.cookie.load_cookies()
 
@@ -121,7 +120,7 @@ class BrowserScenario:
                 print("Something is wrong third try save csv")
                 time.sleep(5)
             if count >= 3:
-                input()
+                input("Получил ошибку при попытке скачать csv")
 
             count += 1
             self.__get_page_data(count=count)

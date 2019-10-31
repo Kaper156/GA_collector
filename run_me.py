@@ -16,26 +16,36 @@ if __name__ == '__main__':
     with open("urls.txt", "rt") as f:
         urls = [l.strip() for l in f.readlines()]
 
-    undownloaded_urls = iter(list())
+    undownloaded_urls = urls.copy()
     if LEVEL_WORK >= LW_CHECK_FOLDER:
         # Создаем или проверяем папку для загурзки
         try:
             os.mkdir(FOLDER_NAME)
+            print(f"Создал папку: {os.path.abspath(FOLDER_NAME)}")
         except FileExistsError:
             # Если папка уже существует, то проверить файлы в ней
+            print(f"Нашёл папку: {os.path.abspath(FOLDER_NAME)}")
             undownloaded_urls = get_undownloaded_urls(urls, FOLDER_NAME)
+            print(f"В ней найденно {len(urls) - len(undownloaded_urls)} скачанных файлов")
 
         # Работаем с браузером
         with BrowserScenario(FOLDER_NAME, PROFILE_PATH, IS_AUTH_NEEDED) as bs:
             # Пока остаются ссылки
-            url = next(undownloaded_urls, None)
-            while url:
-                print(f"Скачиваю по ссылке:{url}")
-                bs.get_week_data(url)
-                # Собираем пропущенные ссылки
+            while len(undownloaded_urls):
+                print("Проверяю ссылки и файлы...")
                 undownloaded_urls = get_undownloaded_urls(urls, FOLDER_NAME)
-                url = next(undownloaded_urls)
-
+                print(f"Осталось ещё {len(undownloaded_urls)}")
+                cnt = 0
+                for url in undownloaded_urls:
+                    cnt += 1
+                    percent = ((len(urls) - (len(undownloaded_urls) - cnt - 1)) / len(urls)) * 100
+                    period = url_get_date(url)
+                    print(f"[{cnt} из {len(undownloaded_urls)}({len(urls)})] (Скачано {round(percent, 2):002f}) \t"
+                          f"Скачиваю csv за период {period[0]} - {period[1]}"
+                          # f", по ссылке:{url}"
+                          )
+                    bs.get_week_data(url)
+            print(f"Csv успешно скачаны")
     if LEVEL_WORK >= LW_AVG_FILE:
         if AVG_CSV:
             csv_out_gen_sum(FOLDER_NAME, FILTERS)

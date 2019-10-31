@@ -14,7 +14,9 @@ def file_get_date(filename):
 
 
 def get_undownloaded_urls(urls, download_dir):
+    result = list()
     file_dates = ([file_get_date(file) for file in os.listdir(download_dir)])
     for url in urls:
         if url_get_date(url) not in file_dates:
-            yield url
+            result.append(url)
+    return result
