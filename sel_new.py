@@ -4,7 +4,7 @@ import time
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, \
-    StaleElementReferenceException, ElementNotInteractableException
+    StaleElementReferenceException, ElementNotInteractableException, InvalidCookieDomainException
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -28,6 +28,7 @@ class CookieKeeper:
             pickle.dump(self.__browser__.get_cookies(), file)
 
     def load_cookies(self):
+        cookies = None
         try:
             with open(self.__file_path__, 'rb') as file:
                 cookies = pickle.load(file)
@@ -37,6 +38,9 @@ class CookieKeeper:
         except (EOFError, FileNotFoundError) as ex:
             print("Cookie не найдены")
             return False
+        except InvalidCookieDomainException as ex:
+            print(cookies)
+            raise ex
 
 
 class BrowserScenario:
@@ -78,6 +82,9 @@ class BrowserScenario:
             if not self.cookie.load_cookies():
                 self.browser.get("https://accounts.google.com/signin/v2")
                 input("Войдите на сайт и нажмите enter:")
+                if self.browser.current_url not in ['https://myaccount.google.com/intro',
+                                                    'https://myaccount.google.com']:
+                    self.browser.get("https://myaccount.google.com")
                 self.cookie.save_cookies()
             else:
                 print("Куки успешно загрузились!")
