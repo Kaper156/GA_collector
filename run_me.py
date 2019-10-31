@@ -16,7 +16,7 @@ if __name__ == '__main__':
     with open("urls.txt", "rt") as f:
         urls = [l.strip() for l in f.readlines()]
 
-    undownloaded_urls = iter(list())
+    undownloaded_urls = iter(urls)
     if LEVEL_WORK >= LW_CHECK_FOLDER:
         # Создаем или проверяем папку для загурзки
         try:
@@ -29,12 +29,16 @@ if __name__ == '__main__':
         with BrowserScenario(FOLDER_NAME, PROFILE_PATH, IS_AUTH_NEEDED) as bs:
             # Пока остаются ссылки
             url = next(undownloaded_urls, None)
+            counter = 0
             while url:
                 print(f"Скачиваю по ссылке:{url}")
                 bs.get_week_data(url)
                 # Собираем пропущенные ссылки
-                undownloaded_urls = get_undownloaded_urls(urls, FOLDER_NAME)
-                url = next(undownloaded_urls)
+                counter += 1
+                if counter > 5:
+                    undownloaded_urls = get_undownloaded_urls(urls, FOLDER_NAME)
+                    counter = 0
+                url = next(undownloaded_urls, None)
 
     if LEVEL_WORK >= LW_AVG_FILE:
         if AVG_CSV:
