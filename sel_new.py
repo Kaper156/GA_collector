@@ -33,8 +33,10 @@ class CookieKeeper:
                 cookies = pickle.load(file)
                 for cookie in cookies:
                     self.__browser__.add_cookie(cookie)
+                return True
         except (EOFError, FileNotFoundError) as ex:
             print("Cookie не найдены")
+            return False
 
 
 class BrowserScenario:
@@ -64,18 +66,21 @@ class BrowserScenario:
         caps["firefox_profile"] = fp.encoded
         caps["marionette"] = True
         self.browser = webdriver.Firefox(firefox_profile=fp, firefox_binary=self.__FIREFOX_BINARY_PATH__,
-                                    capabilities=caps,
-                                    executable_path=self.__GECKO_DRIVER_PATH__)
+                                         capabilities=caps,
+                                         executable_path=self.__GECKO_DRIVER_PATH__)
         self.browser.implicitly_wait(10)
         self.browser.set_script_timeout(10)
 
         self.cookie = CookieKeeper(self.browser)
         if self.is_authorization_needed:
-            self.browser.get("https://accounts.google.com/signin/v2")
-            self.cookie.load_cookies()
-            input("Войдите на сайт и нажмите enter (Возможно куки уже загрузились, попробуйте перезагрузить страницу)")
-            self.browser.get("https://accounts.google.com/signin/v2")
-            self.cookie.save_cookies()
+
+            self.browser.get("https://myaccount.google.com")
+            if not self.cookie.load_cookies():
+                self.browser.get("https://accounts.google.com/signin/v2")
+                input("Войдите на сайт и нажмите enter:")
+                self.cookie.save_cookies()
+            else:
+                print("Куки успешно загрузились!")
             self.is_authorization_needed = False
         self.cookie.load_cookies()
 
