@@ -21,10 +21,10 @@ if __name__ == '__main__':
         # Создаем или проверяем папку для загурзки
         try:
             os.mkdir(FOLDER_NAME)
-            print(f"Создал папку: {os.path.abspath(FOLDER_NAME)}")
+            print(f"Создал папку: \t{os.path.abspath(FOLDER_NAME)}")
         except FileExistsError:
             # Если папка уже существует, то проверить файлы в ней
-            print(f"Нашёл папку: {os.path.abspath(FOLDER_NAME)}")
+            print(f"Нашёл папку: \t{os.path.abspath(FOLDER_NAME)}")
             undownloaded_urls = get_undownloaded_urls(urls, FOLDER_NAME)
             print(f"В ней найденно {len(urls) - len(undownloaded_urls)} скачанных файлов")
 
@@ -38,12 +38,10 @@ if __name__ == '__main__':
                 cnt = 0
                 for url in undownloaded_urls:
                     cnt += 1
-                    percent = ((len(urls) - (len(undownloaded_urls) - cnt - 1)) / len(urls)) * 100
+                    percent = ((len(urls) - (len(undownloaded_urls) - cnt)) / len(urls)) * 100
                     period = url_get_date(url)
-                    print(f"[{cnt} из {len(undownloaded_urls)}({len(urls)})] (Скачано {round(percent, 2):002f}) \t"
-                          f"Скачиваю csv за период {period[0]} - {period[1]}"
-                          # f", по ссылке:{url}"
-                          )
+                    print(f"[{cnt} из {len(undownloaded_urls)}({len(urls)})] (Скачано {round(percent, 2):3,.2f}%) \t"
+                          f"Скачиваю csv за период {period[0]} - {period[1]}")
                     bs.get_week_data(url)
             print(f"Csv успешно скачаны")
     if LEVEL_WORK >= LW_AVG_FILE:
