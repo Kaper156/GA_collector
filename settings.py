@@ -4,7 +4,7 @@ import hashlib
 import os
 
 from check_csv_and_url import url_get_date
-from url_generator import TYPE_MONTH, TYPE_WEEK, TYPE_DAY
+from url_generator import TYPE_WEEK
 
 LW_URLS = 3
 LW_CHECK_FOLDER = 2
@@ -12,13 +12,13 @@ LW_AVG_FILE = 1
 
 LEVEL_WORK = LW_URLS
 
-BASE_URL = "https://analytics.google.com/analytics/web/?authuser=1#/report/bf-roi-calculator"
+BASE_URL = "https://analytics.google.com/analytics/web/"
 
 FROM_DATE = datetime.datetime.strptime(url_get_date(BASE_URL)[0], '%Y%m%d')
-# FROM_DATE = datetime.datetime(year=2018, month=8, day=1)
+# FROM_DATE = datetime.datetime(year=2018, month=12, day=1)
 
-TO_DATE = datetime.datetime(year=2019, month=7, day=31)
-# TO_DATE = datetime.datetime.now()
+# TO_DATE = datetime.datetime(year=2019, month=7, day=31)
+TO_DATE = datetime.datetime.now()
 
 # Для типа периода используй TYPE_DAY или TYPE_MONTH или TYPE_WEEK
 DATE_TYPE = TYPE_WEEK  # TYPE_DAY TYPE_WEEK TYPE_MONTH
@@ -43,10 +43,17 @@ FOLDER_NAME += get_small_hash(BASE_URL, FROM_DATE, TO_DATE, DATE_TYPE)
 FOLDER_NAME = os.path.join(os.getcwd(), 'out', FOLDER_NAME)
 
 
-def FILTERS():
+def load_filters():
     with open('filters.txt', 'rt') as filters_txt:
         return [f + "\n" for f in filters_txt]
 
+
+def save_filters(filters):
+    with open('filters.txt', 'wt') as filters_txt:
+        filters_txt.writelines(filters)
+
+
+FILTERS = load_filters()
 
 # Используй только такой слэш '/'
 PROFILE_PATH = "C:/Users/User/AppData/Roaming/Mozilla/Firefox/Profiles/47kb4fzr.SeleniumTestProfile"
