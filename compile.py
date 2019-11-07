@@ -67,13 +67,27 @@ def filter_generator(filters):
 
 # Yield header row, after this yield tuple([rows], filename)
 # Rows are filtered
+def file_error_promt(file_name):
+    print(f"Ошибка в файле {file_name}")
+    if input(f"Напишите skip, иначе программа удалит файл будет необходимо запустить её заново").lower() == "skip":
+        return True
+    return False
+
+
 def csv_out_gen_rows(download_folder, filters: list):
     filter_func = filter_generator(filters)
     header_returned = False
     for file_name in os.listdir(download_folder):
-        with codecs.open(os.path.join(download_folder, file_name), encoding='windows-1251') as file:
+        file_path = os.path.join(download_folder, file_name)
+        with codecs.open(file_path, encoding='windows-1251') as file:
             csv_dict = csv.DictReader(filter_func(file), dialect="ga")
             if not header_returned:
+                if csv_dict.fieldnames is None:
+                    if file_error_promt(file_name):
+                        continue
+                    else:
+                        os.remove(file_path)
+                        print(f"Файл по адрессу: {file_path} удален, перезапустите программу, для скачивания заново")
                 yield csv_dict.fieldnames
                 header_returned = True
             yield csv_dict, file_name

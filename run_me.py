@@ -51,10 +51,10 @@ if __name__ == '__main__':
         for f in FILTERS:
             print(f)
         promt = "Введите новый фильтр, а закончив, введите пустую строку:"
-        _filter = input(promt)
-        while _filter.strip():
+        _filter = input(promt).strip()
+        while _filter:
             FILTERS += _filter
-            _filter = input(promt)
+            _filter = input(promt).strip()
         save_filters(FILTERS)
         if AVG_CSV:
             csv_out_gen_sum(FOLDER_NAME, FILTERS)
