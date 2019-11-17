@@ -6,6 +6,18 @@ from decimal import Decimal, DecimalException
 
 from typical.check_csv_and_url import file_get_date
 
+# TODO next order of columns
+'''
+WeekNumber: 201905
+DATE-from: YYYY/MM/DD
+Line-item, DV_insertion order, Campaign (first string row)
+Transactions, conversions
+Revenue
+'''
+
+# TODO user reordering after
+
+# TODO insert before
 ADDITIONAL_HEADERS = ["Week", "From", "To"]
 csv.register_dialect('ga',
                      quotechar='"', delimiter=',',
@@ -31,7 +43,9 @@ def get_outcsv_filename(download_folder):
 
 
 def get_line_items_filename(download_folder):
-    return get_outcsv_filename(download_folder).replace(".csv", "_line_items.csv")  # TODO Danger, '.csv' can be in path
+    return get_outcsv_filename(download_folder).replace(".csv", "_line_items.csv")
+    # TODO Danger, '.csv' can be in path
+    # rfind('.') and replace from this
 
 
 def csv_out_uniq_line_items(download_folder, filters):
