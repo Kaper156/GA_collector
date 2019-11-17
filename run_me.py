@@ -52,8 +52,8 @@ if __name__ == '__main__':
             print(f)
         promt = "Введите новый фильтр, а закончив, введите пустую строку:"
         _filter = input(promt).strip()
-        while _filter:
-            FILTERS += _filter
+        while len(_filter):
+            FILTERS.append(_filter)
             _filter = input(promt).strip()
         save_filters(FILTERS)
         if AVG_CSV:

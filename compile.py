@@ -58,7 +58,7 @@ def filter_generator(filters):
                 continue
             if not line.strip():
                 continue
-            if line in filters:
+            if line.strip() in filters:
                 break
             yield line
 
