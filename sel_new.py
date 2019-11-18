@@ -10,9 +10,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-# css selectors
-ANCHOR_LOADED = 'th.ACTION-sort'
-ANCHOR_NEXT = "li.ACTION-paginate:nth-of-type(2)"
+# Import selector enums
+from page_selectors import GAPage
 
 
 class CookieKeeper:
@@ -88,6 +87,7 @@ class BrowserScenario:
                 self.cookie.save_cookies()
             else:
                 print("Куки успешно загрузились!")
+                # TODO check cookie expire
             self.is_authorization_needed = False
         self.cookie.load_cookies()
 
@@ -116,8 +116,8 @@ class BrowserScenario:
 
     def __get_page_data(self, count=None):
         try:
-            self.__click_and_wait(".ID-exportControlButton", "li.ACTION-export.TARGET-CSV")
-            self.__click_and_wait("li.ACTION-export.TARGET-CSV", ANCHOR_LOADED)
+            self.__click_and_wait(GAPage.btn_export, GAPage.choice_to_csv)
+            self.__click_and_wait(GAPage.choice_to_csv, GAPage.anchor_loaded)
         except (TimeoutException, StaleElementReferenceException, ElementNotInteractableException):
             # TODO refactoring method
             if count is None:
@@ -133,20 +133,21 @@ class BrowserScenario:
             self.__get_page_data(count=count)
 
     def __browse_next_page(self):
-        pagination_text = self.browser.find_element_by_css_selector("span.C_PAGINATION_ROWS_LONG>label").text
+        pagination_text = self.browser.find_element_by_css_selector(GAPage.pagination_nums).text
         pagination_text = pagination_text.split(" ")
         if pagination_text[2] == pagination_text[4]:
             return False
-        self.__click_and_wait(ANCHOR_NEXT, ANCHOR_LOADED, 15)
+        self.__click_and_wait(GAPage.anchor_nex_page, GAPage.anchor_loaded, 15)
+        # TODO return true (?)
 
     def get_week_data(self, url):
         self.browser.get(url)
         while True:
-            self.__wait_for("iframe#galaxyIframe")
-            self.browser.switch_to_frame(self.browser.find_element_by_id("galaxyIframe"))
-            self.__wait_while_visible("ID-reportLoading")
+            self.__wait_for(GAPage.main_frame)
+            self.browser.switch_to_frame(self.browser.find_element_by_id(GAPage.main_frame_ID))
+            self.__wait_while_visible(GAPage.alert_loading_ID)
             self.__get_page_data()
-            self.__wait_while_visible("ID-messageBox")
+            self.__wait_while_visible(GAPage.alert_download_ID)
             if not self.__browse_next_page():
                 break
 
