@@ -20,7 +20,7 @@ if __name__ == '__main__':
     if LEVEL_WORK >= LW_CHECK_FOLDER:
         # Создаем или проверяем папку для загурзки
         try:
-            os.mkdir(FOLDER_NAME)
+            os.makedirs(FOLDER_NAME)
             print(f"Создал папку: \t{os.path.abspath(FOLDER_NAME)}")
         except FileExistsError:
             # Если папка уже существует, то проверить файлы в ней
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
         if len(undownloaded_urls):
             # Работаем с браузером
-            with BrowserScenario(FOLDER_NAME, PROFILE_PATH, IS_AUTH_NEEDED) as bs:
+            with BrowserScenario(FOLDER_NAME, PROFILE_PATH) as bs:
                 # Пока остаются ссылки
                 while len(undownloaded_urls):
                     print("Проверяю ссылки и файлы...")

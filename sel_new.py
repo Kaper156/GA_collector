@@ -45,7 +45,7 @@ class CookieKeeper:
 
 class BrowserScenario:
     __FIREFOX_BINARY_PATH__ = "C:/Program Files/Mozilla Firefox/firefox.exe"
-    __GECKO_DRIVER_PATH__ = '../selenium_drv/geckodriver.exe'
+    __GECKO_DRIVER_PATH__ = './selenium_drv/geckodriver.exe'
 
     def __init__(self, download_dir, profile_path: str, is_authorization_needed=True):
         self.download_dir = download_dir

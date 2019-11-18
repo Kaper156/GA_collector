@@ -1,12 +1,8 @@
 import calendar
 import datetime
 
-TYPE_DAY = 1
-TYPE_WEEK = 7
-TYPE_MONTH = 30
-
-tmpl_date1 = "<!#@!1>"
-tmpl_date2 = "<!#@!2>"
+from constant_values import TYPE_DAY, TYPE_WEEK, TYPE_MONTH
+from constant_values import tmpl_date1, tmpl_date2
 
 
 def add_month(date1):
@@ -68,4 +64,3 @@ def generate_urls(BASE_URL, FROM_DATE, TO_DATE, DATE_TYPE):
             # print(new_url)
             urls.append(new_url)
     print(f"Созданно {len(urls)} ссылок")
-

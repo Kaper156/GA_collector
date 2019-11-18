@@ -4,20 +4,9 @@ import datetime
 import os
 from decimal import Decimal, DecimalException
 
-from typical.check_csv_and_url import file_get_date
+from check_csv_and_url import file_get_date
 
-# TODO next order of columns
-'''
-WeekNumber: 201905
-DATE-from: YYYY/MM/DD
-Line-item, DV_insertion order, Campaign (first string row)
-Transactions, conversions
-Revenue
-'''
 
-# TODO user reordering after
-
-# TODO insert before
 ADDITIONAL_HEADERS = ["Week", "From", "To"]
 csv.register_dialect('ga',
                      quotechar='"', delimiter=',',
