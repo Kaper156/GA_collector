@@ -6,13 +6,37 @@ from decimal import Decimal, DecimalException
 
 from check_csv_and_url import file_get_date
 
-
 ADDITIONAL_HEADERS = ["Week", "From", "To"]
 csv.register_dialect('ga',
                      quotechar='"', delimiter=',',
                      quoting=csv.QUOTE_ALL, skipinitialspace=True)
 
 str_to_decimal = lambda val: val.replace('$', '').replace(',', '').replace(' ', '')
+
+
+class OutCsv:
+    def __init__(self, download_folder, filters):
+        self.path_to_src_csv = download_folder
+        self.filter = filters  # TODO filter wrap
+
+    def set_path_to_csv(self, path):
+        self.path_to_src_csv = path
+        # TODO init header, filters
+
+    def merge_csv(self, out_csv_path):
+        pass
+
+    def avg_csv(self, out_csv_path):
+        pass
+
+    def write_distinct_line_items(self, out_csv_path):
+        pass
+
+    def __init_header__(self):
+        pass
+
+    def __init_fields__(self):
+        pass
 
 
 def decimal_to_str(val):
