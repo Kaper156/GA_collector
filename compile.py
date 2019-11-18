@@ -27,14 +27,13 @@ def get_outcsv_filename(download_folder):
     out_csv_path = os.path.basename(download_folder) + ".csv"
     out_csv_path = os.path.join(out_dir_path, out_csv_path)
     if not os.path.exists(out_dir_path):
-        os.mkdir(out_dir_path)
+        os.makedirs(out_dir_path)
     return out_csv_path
 
 
 def get_line_items_filename(download_folder):
-    return get_outcsv_filename(download_folder).replace(".csv", "_line_items.csv")
-    # TODO Danger, '.csv' can be in path
-    # rfind('.') and replace from this
+    path = get_outcsv_filename(download_folder)
+    return path[-4:] + "_line_items" + path[:-4]
 
 
 def csv_out_uniq_line_items(download_folder, filters):
