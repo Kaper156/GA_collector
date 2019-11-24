@@ -6,3 +6,4 @@ cookies.pkl
 geckodriver.log
 filters.txt
 line_items.txt
+secret_settings.py
