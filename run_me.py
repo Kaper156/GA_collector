@@ -6,7 +6,7 @@ from settings import *
 from url_generator import generate_urls
 
 if __name__ == '__main__':
-    if LEVEL_WORK >= LW_URLS:
+    if LEVEL_WORK >= LW_GENERATE_URLS:
         # Генерирует ссылки в файл urls.txt
         generate_urls(BASE_URL=BASE_URL,
                       FROM_DATE=FROM_DATE, TO_DATE=TO_DATE,
@@ -18,7 +18,7 @@ if __name__ == '__main__':
         urls = [l.strip() for l in f.readlines()]
 
     undownloaded_urls = urls.copy()
-    if LEVEL_WORK >= LW_CHECK_FOLDER:
+    if LEVEL_WORK >= LW_DOWNLOAD_GENERATED_URLS:
         # Создаем или проверяем папку для загурзки
         try:
             os.makedirs(FOLDER_NAME)
@@ -47,12 +47,12 @@ if __name__ == '__main__':
                             f"Скачиваю csv за период {period[0]} - {period[1]}")
                         bs.get_week_data(url)
                 print(f"Csv успешно скачаны")
-    if LEVEL_WORK >= LW_AVG_FILE:
+    if LEVEL_WORK >= LW_COLLECT_RESULT:
         operator = None
-        if OUT_OPERATION == CSV_OP_AVG:
+        if OUT_OPERATION == CSV_AVERAGE_PERIOD:
             operator = CsvAvg(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH, operation='AVG')
 
-        elif OUT_OPERATION == CSV_OP_SUM:
+        elif OUT_OPERATION == CSV_SUMMARIZE_PERIOD:
             operator = CsvAvg(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH, operation='SUM')
         else:
             operator = CsvMerger(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH)

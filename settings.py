@@ -26,9 +26,9 @@ def generate_folder_name(url, d_from, d_to, d_type):
 
 def generate_out_csv_path(folder_name, out_operation):
     name = f'Results_{os.path.basename(folder_name)}'
-    if out_operation == CSV_OP_SUM:
+    if out_operation == CSV_SUMMARIZE_PERIOD:
         name += '__total_sum.csv'
-    elif out_operation == CSV_OP_AVG:
+    elif out_operation == CSV_AVERAGE_PERIOD:
         name += '__average.csv'
     else:
         name += '__aggregated_rows.csv'
@@ -40,9 +40,9 @@ def generate_out_csv_path(folder_name, out_operation):
 
 
 # Set default values
-LEVEL_WORK = LEVEL_WORK or LW_URLS
+LEVEL_WORK = LEVEL_WORK or LW_GENERATE_URLS
 FROM_DATE = FROM_DATE or datetime.datetime.strptime(url_get_date(BASE_URL)[0], '%Y%m%d')
 TO_DATE = TO_DATE or datetime.datetime.now()
 FOLDER_NAME = FOLDER_NAME or generate_folder_name(BASE_URL, FROM_DATE, TO_DATE, DATE_TYPE)
-OUT_OPERATION = OUT_OPERATION or CSV_OP_INC
+OUT_OPERATION = OUT_OPERATION or CSV_OVERALL
 OUT_CSV_PATH = OUT_CSV_PATH or generate_out_csv_path(FOLDER_NAME, OUT_OPERATION)
