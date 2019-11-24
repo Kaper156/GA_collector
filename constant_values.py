@@ -1,3 +1,5 @@
+import csv
+
 # Enum of date-range types
 TYPE_DAY = 1
 TYPE_WEEK = 7
@@ -12,3 +14,20 @@ LW_AVG_FILE = 1
 tmpl_date1 = "<!#@!1>"
 tmpl_date2 = "<!#@!2>"
 
+# Enum of operations with csv-files
+CSV_OP_INC = 1
+CSV_OP_SUM = 2
+CSV_OP_AVG = 3
+
+# Additional headers which included to out_csv
+ADDITIONAL_HEADERS = ["Week", "From", "To"]  # WARNING: change CsvHandler._set_additional_headers_ too
+
+# Encodings
+ENC_IN = 'windows-1251'
+ENC_OUT = 'utf-8'
+
+DATE_OUT_FORMAT = "%Y.%m.%d"
+
+csv.register_dialect('ga',
+                     quotechar='"', delimiter=',',
+                     quoting=csv.QUOTE_ALL, skipinitialspace=True)

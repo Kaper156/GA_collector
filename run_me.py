@@ -1,5 +1,6 @@
 from check_csv_and_url import get_undownloaded_urls
-from compile import csv_out_gen_sum, csv_out_gen_increment, csv_out_uniq_line_items
+from csv_handler import CsvMerger, CsvAvg
+# from compile import csv_out_gen_sum, csv_out_gen_increment, csv_out_uniq_line_items
 from sel_new import BrowserScenario
 from settings import *
 from url_generator import generate_urls
@@ -47,17 +48,12 @@ if __name__ == '__main__':
                         bs.get_week_data(url)
                 print(f"Csv успешно скачаны")
     if LEVEL_WORK >= LW_AVG_FILE:
-        print("Уже доступные фильтры:")
-        for f in FILTERS:
-            print(f)
-        promt = "Введите новый фильтр, а закончив, введите пустую строку:"
-        _filter = input(promt).strip()
-        while len(_filter):
-            FILTERS.append(_filter)
-            _filter = input(promt).strip()
-        save_filters(FILTERS)
-        if AVG_CSV:
-            csv_out_gen_sum(FOLDER_NAME, FILTERS)
+        operator = None
+        if OUT_OPERATION == CSV_OP_AVG:
+            operator = CsvAvg(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH, operation='AVG')
+
+        elif OUT_OPERATION == CSV_OP_SUM:
+            operator = CsvAvg(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH, operation='SUM')
         else:
-            csv_out_gen_increment(FOLDER_NAME, FILTERS)
-        csv_out_uniq_line_items(FOLDER_NAME, FILTERS)
+            operator = CsvMerger(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH)
+        operator.write_out_csv()

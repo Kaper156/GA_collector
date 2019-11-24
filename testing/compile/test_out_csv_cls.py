@@ -1,21 +1,20 @@
 import os
 import unittest
 
-from compile import OutCsv
 
-
+# TODO Rewrite all of this
 class TestCompile(unittest.TestCase):
     def setUp(self):
         # Load settings
-        os.chdir('../../')  # For correct loading settings
-        from settings import FILTERS
+        os.chdir('../../')  # TODO fix that (can walk too up)
 
         # Set folder paths
         self.result_folder = os.path.join(os.getcwd(), 'testing', 'compile', 'results')
         self.expected_folder = os.path.join(os.getcwd(), 'testing', 'compile', 'expected')
+        self.sources_folder = os.path.join("testing", "sources", "csv_by_week")
 
         # Set up cls
-        self.csv_out = OutCsv(self.result_folder, FILTERS)
+        self.csv_out = OutCsv(self.sources_folder, )
         print(f"Set up cls to folder: {self.result_folder}")
         print(f"Loaded {len(FILTERS)} filters")
 
@@ -59,3 +58,20 @@ class TestCompile(unittest.TestCase):
         result = self.read_file(self.res_li_f)
 
         self.assertEqual(expected, result)
+
+
+class ExecuteCompile(TestCompile):
+
+    def test_merge(self):
+        # Write csv
+        self.csv_out.merge_csv(self.res_merge_f)
+        result = self.read_file(self.res_merge_f)
+
+    def test_avg(self):
+        self.csv_out.avg_csv(self.res_avg_f)
+        result = self.read_file(self.res_avg_f)
+
+    def test_line_items(self):
+        # Write csv
+        self.csv_out.write_distinct_line_items(self.res_li_f)
+        result = self.read_file(self.res_li_f)

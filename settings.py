@@ -17,17 +17,6 @@ def get_small_hash(value, d1: datetime.datetime, d2: datetime.datetime, DT: int)
     return h
 
 
-def load_filters(f_path):
-    with open(f_path, 'rt') as filters_txt:
-        return [f.strip() for f in filters_txt if f.strip()]
-
-
-def save_filters(filters):
-    with open('filters.txt', 'wt') as filters_txt:
-        for ft in filters:
-            filters_txt.write(f"{ft.strip()}\n")
-
-
 def generate_folder_name(url, d_from, d_to, d_type):
     f_name = datetime.datetime.strftime(datetime.datetime.now(), "%Y.%m.%d_")
     f_name += get_small_hash(url, d_from, d_to, d_type)
@@ -35,10 +24,25 @@ def generate_folder_name(url, d_from, d_to, d_type):
     return f_name
 
 
+def generate_out_csv_path(folder_name, out_operation):
+    name = f'Results_{os.path.basename(folder_name)}'
+    if out_operation == CSV_OP_SUM:
+        name += '__total_sum.csv'
+    elif out_operation == CSV_OP_AVG:
+        name += '__average.csv'
+    else:
+        name += '__aggregated_rows.csv'
+    res_folder = os.path.join(os.getcwd(), 'out', 'results')
+    if not os.path.exists(res_folder):
+        os.makedirs(res_folder)
+
+    return os.path.join(res_folder, name)
+
+
 # Set default values
 LEVEL_WORK = LEVEL_WORK or LW_URLS
 FROM_DATE = FROM_DATE or datetime.datetime.strptime(url_get_date(BASE_URL)[0], '%Y%m%d')
 TO_DATE = TO_DATE or datetime.datetime.now()
 FOLDER_NAME = FOLDER_NAME or generate_folder_name(BASE_URL, FROM_DATE, TO_DATE, DATE_TYPE)
-FILTERS_PATH = FILTERS_PATH or 'filters.txt'
-FILTERS = load_filters(FILTERS_PATH)
+OUT_OPERATION = OUT_OPERATION or CSV_OP_INC
+OUT_CSV_PATH = OUT_CSV_PATH or generate_out_csv_path(FOLDER_NAME, OUT_OPERATION)
