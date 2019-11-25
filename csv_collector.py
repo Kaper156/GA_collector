@@ -10,7 +10,7 @@ from constant_values import DATE_OUT_FORMAT
 from constant_values import ENC_IN, ENC_OUT
 
 
-class CsvMerger:
+class CsvCollector:
     def __init__(self, folder_with_csv, out_file_path):
         self.src_folder = folder_with_csv
         self.out_file_path = out_file_path
@@ -121,15 +121,25 @@ class RowTypeAggregator:
     def str_to_decimal(val):
         return val.replace('$', '').replace(',', '').replace(' ', '')
 
+    @staticmethod
+    def increment_row_by_row(row, row_def):
+        for col_name, col_val in row.items():
+            _type = type(row_def[col_name])
+            if _type in (str, None):
+                continue
+            if _type is Decimal:
+                col_val = RowTypeAggregator.str_to_decimal(col_val)
+            col_val = _type(col_val)
+            row_def[col_name] += col_val
+        return row_def
 
-class CsvAvg(CsvMerger):
-    def __init__(self, folder_with_csv, out_file_path, operation='sum'):
-        super(CsvAvg, self).__init__(folder_with_csv, out_file_path)
-        self.additional_headers += ['File Name']
+
+class CsvSummarize(CsvCollector):
+    def __init__(self, folder_with_csv, out_file_path):
+        super(CsvSummarize, self).__init__(folder_with_csv, out_file_path)
         self.row_defaults = None
-        self.operation = operation.upper()  # TODO refactoring this
 
-    def _get_row_defaults_(self):
+    def _get_default_row_(self):
         if self.row_defaults:
             return self.row_defaults.copy()
         parse = RowTypeAggregator.get_row_default_values
@@ -141,35 +151,18 @@ class CsvAvg(CsvMerger):
                 return self.row_defaults.copy()
         raise Exception("File do not contains rows, or all rows include blank values")
 
-    # TODO refactoring this
     def _handle_csv_files_rows_(self, writer):
         for filename, csv_rows in self._get_csv_readers_():
-            file_row = self._get_row_defaults_()
+            file_row = self._get_default_row_()
             for row in csv_rows:
-                for col_name, col_val in row.items():
-                    _type = type(file_row[col_name])
-                    if _type in (str, None):
-                        continue
-                    if _type is Decimal:
-                        col_val = RowTypeAggregator.str_to_decimal(col_val)
-
-                        file_row[col_name] += _type(col_val)
-            # If average, then each not str column should be divided to number of rows
-            if self.operation == 'AVG':
-                for col_name in file_row.keys():
-                    if type(file_row[col_name]) is not str:
-                        file_row[col_name] = file_row[col_name] / csv_rows.line_num
-
-            # Set additional headers after, because they interfere calculations
+                file_row = RowTypeAggregator.increment_row_by_row(row, file_row)
             additional_headers = self._get_additional_headers_for_file_(filename)
             super()._set_additional_headers_(file_row, additional_headers)
             writer.writerow(file_row)
 
 
 if __name__ == '__main__':
-    CsvMerger('C:/Users/User/Documents/Programming/Python/Nika_GA/testing/sources/csv_by_week',
-              'test_inc.csv').write_out_csv()
-    CsvAvg('C:/Users/User/Documents/Programming/Python/Nika_GA/testing/sources/csv_by_week', 'test_avg.csv',
-           'avg').write_out_csv()
-    CsvAvg('C:/Users/User/Documents/Programming/Python/Nika_GA/testing/sources/csv_by_week', 'test_sum.csv',
-           'sum').write_out_csv()
+    CsvCollector('C:/Users/User/Documents/Programming/Python/Nika_GA/testing/sources/csv_by_week',
+                 'test_inc.csv').write_out_csv()
+    CsvSummarize('C:/Users/User/Documents/Programming/Python/Nika_GA/testing/sources/csv_by_week',
+                 'test_sum.csv').write_out_csv()

@@ -1,5 +1,5 @@
 from check_csv_and_url import get_undownloaded_urls
-from csv_handler import CsvMerger, CsvAvg
+from csv_collector import CsvCollector, CsvSummarize
 # from compile import csv_out_gen_sum, csv_out_gen_increment, csv_out_uniq_line_items
 from sel_new import BrowserScenario
 from settings import *
@@ -49,11 +49,8 @@ if __name__ == '__main__':
                 print(f"Csv успешно скачаны")
     if LEVEL_WORK >= LW_COLLECT_RESULT:
         operator = None
-        if OUT_OPERATION == CSV_AVERAGE_PERIOD:
-            operator = CsvAvg(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH, operation='AVG')
-
-        elif OUT_OPERATION == CSV_SUMMARIZE_PERIOD:
-            operator = CsvAvg(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH, operation='SUM')
+        if OUT_OPERATION == CSV_SUMMARIZE_PERIOD:
+            operator = CsvSummarize(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH)
         else:
-            operator = CsvMerger(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH)
+            operator = CsvCollector(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH)
         operator.write_out_csv()

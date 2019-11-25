@@ -28,8 +28,6 @@ def generate_out_csv_path(folder_name, out_operation):
     name = f'Results_{os.path.basename(folder_name)}'
     if out_operation == CSV_SUMMARIZE_PERIOD:
         name += '__total_sum.csv'
-    elif out_operation == CSV_AVERAGE_PERIOD:
-        name += '__average.csv'
     else:
         name += '__aggregated_rows.csv'
     res_folder = os.path.join(os.getcwd(), 'out', 'results')

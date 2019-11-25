@@ -17,7 +17,6 @@ tmpl_date2 = "<!#@!2>"
 # Enum of operations with csv-files
 CSV_OVERALL = 1
 CSV_SUMMARIZE_PERIOD = 2
-CSV_AVERAGE_PERIOD = 3
 
 # Additional headers which included to out_csv
 ADDITIONAL_HEADERS = ["Week", "From", "To"]  # WARNING: change CsvHandler._set_additional_headers_ too
