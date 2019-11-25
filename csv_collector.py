@@ -5,6 +5,7 @@ import os
 from decimal import Decimal, DecimalException
 
 from check_csv_and_url import file_get_date
+from column_picker import ColumnPicker
 from constant_values import ADDITIONAL_HEADERS
 from constant_values import DATE_OUT_FORMAT
 from constant_values import ENC_IN, ENC_OUT
@@ -16,13 +17,17 @@ class CsvCollector:
         self.out_file_path = out_file_path
         self.additional_headers = ADDITIONAL_HEADERS
         self.headers = None
+        self.column_picker = None
 
     def _handle_csv_files_rows_(self, writer):
         for filename, csv_rows in self._get_csv_readers_():
             additional_headers = self._get_additional_headers_for_file_(filename)
             for row in csv_rows:
                 row = self._set_additional_headers_(row, additional_headers)
-                writer.writerow(row)
+                writer.writerow(self._get_req_cols_(row))
+
+    def _get_req_cols_(self, row):
+        return self.column_picker.pick_row_cols(row)
 
     def write_out_csv(self):
         with open(self.out_file_path, 'w', newline='', encoding=ENC_OUT) as out_f:
@@ -31,6 +36,7 @@ class CsvCollector:
             self._handle_csv_files_rows_(writer=out_writer)
 
     def _get_additional_headers_for_file_(self, filename):
+        # Warning rewrite it if additional headers changed
         d1, d2 = file_get_date(filename)
         d1, d2 = [datetime.datetime.strptime(d, "%Y%m%d") for d in (d1, d2)]
         week = d2.strftime("%V")
@@ -56,8 +62,13 @@ class CsvCollector:
             # Check for empty headers or something erorrs like that
             if type(headers) is list and type(headers[0]) is str:
                 headers += self.additional_headers
-                self.headers = headers
+
+                # Now it's None always, but in the future it can be configured from settings
+                if self.column_picker is None:
+                    self.column_picker = ColumnPicker(headers)
+                self.headers = self.column_picker.pick_headers()
                 break
+
         return self.headers
 
     def _get_csv_readers_(self):
@@ -124,6 +135,8 @@ class RowTypeAggregator:
     @staticmethod
     def increment_row_by_row(row, row_def):
         for col_name, col_val in row.items():
+            if col_name not in row_def.keys():
+                continue  # If this col not specified
             _type = type(row_def[col_name])
             if _type in (str, None):
                 continue
@@ -140,24 +153,38 @@ class CsvSummarize(CsvCollector):
         self.row_defaults = None
 
     def _get_default_row_(self):
+        # Should return copy of default row (ordered dict with headers with start values)
         if self.row_defaults:
             return self.row_defaults.copy()
-        parse = RowTypeAggregator.get_row_default_values
+        parse = RowTypeAggregator.get_row_default_values  # To convenience
 
+        # Send csv files to parser, while them don't return def values
         for _, csv_rows in super()._get_csv_readers_():
+            # Parsed bad file will return None
             while self.row_defaults is None:
                 self.row_defaults = parse(next(csv_rows))
+
+            # If we got row_def before next file
             if self.row_defaults is not None:
+                # Return copy
                 return self.row_defaults.copy()
         raise Exception("File do not contains rows, or all rows include blank values")
 
     def _handle_csv_files_rows_(self, writer):
         for filename, csv_rows in self._get_csv_readers_():
+
             file_row = self._get_default_row_()
-            for row in csv_rows:
-                file_row = RowTypeAggregator.increment_row_by_row(row, file_row)
+
+            # Add additional headers before pick specified
             additional_headers = self._get_additional_headers_for_file_(filename)
-            super()._set_additional_headers_(file_row, additional_headers)
+            file_row = self._set_additional_headers_(file_row, additional_headers)
+
+            # Pick only specified cols
+            file_row = self.column_picker.pick_row_cols(file_row)
+
+            for row in csv_rows:
+                # row = self._get_req_cols_(row)
+                file_row = RowTypeAggregator.increment_row_by_row(row, file_row)
             writer.writerow(file_row)
 
 
