@@ -1,5 +1,6 @@
 from check_csv_and_url import get_undownloaded_urls
 from csv_collector import CsvCollector, CsvSummarize
+from gsheet import Gsheet
 # from compile import csv_out_gen_sum, csv_out_gen_increment, csv_out_uniq_line_items
 from sel_new import BrowserScenario
 from settings import *
@@ -54,3 +55,9 @@ if __name__ == '__main__':
         else:
             operator = CsvCollector(folder_with_csv=FOLDER_NAME, out_file_path=OUT_CSV_PATH)
         operator.write_out_csv()
+    if LEVEL_WORK >= LW_SEND_TO_GOOGLE_SHEETS and GSHEET_SPREADSHEET:
+        print("Авторизовываемся в google-sheets-api...")
+        gsheet = Gsheet()
+        print("Посылаем данные..")
+        updated_rows_count = gsheet.send_from_csv(OUT_CSV_PATH, GSHEET_SPREADSHEET, GSHEET_RANGE)
+        print(f"Обновленно {updated_rows_count} строк")

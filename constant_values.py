@@ -6,9 +6,10 @@ TYPE_WEEK = 7
 TYPE_MONTH = 30
 
 # Enum of level-of-work
-LW_GENERATE_URLS = 3
-LW_DOWNLOAD_GENERATED_URLS = 2
-LW_COLLECT_RESULT = 1
+LW_GENERATE_URLS = 4
+LW_DOWNLOAD_GENERATED_URLS = 3
+LW_COLLECT_RESULT = 2
+LW_SEND_TO_GOOGLE_SHEETS = 1
 
 # Templates to be replaced by date in BASE_URL
 tmpl_date1 = "<!#@!1>"
@@ -30,3 +31,7 @@ DATE_OUT_FORMAT = "%Y.%m.%d"
 csv.register_dialect('ga',
                      quotechar='"', delimiter=',',
                      quoting=csv.QUOTE_ALL, skipinitialspace=True)
+
+GSHEET_SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+GSHEET_TOKEN = 'token.pickle'
+GSHEET_CREDS = 'credentials.json'
