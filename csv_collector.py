@@ -1,12 +1,13 @@
 import codecs
 import csv
 import datetime
+import decimal
 import os
 from decimal import Decimal, DecimalException
 
 from check_csv_and_url import file_get_date
 from column_picker import ColumnPicker
-from constant_values import ADDITIONAL_HEADERS
+from constant_values import ADDITIONAL_HEADERS, CSV_NULL_VALUES
 from constant_values import DATE_OUT_FORMAT
 from constant_values import ENC_IN, ENC_OUT
 
@@ -140,9 +141,19 @@ class RowTypeAggregator:
             _type = type(row_def[col_name])
             if _type in (str, None):
                 continue
+            if col_val in CSV_NULL_VALUES:
+                col_val = '0'
             if _type is Decimal:
                 col_val = RowTypeAggregator.str_to_decimal(col_val)
-            col_val = _type(col_val)
+                col_val = col_val.replace('<$0.01', '0.01')
+            try:
+                col_val = _type(col_val)
+            except ValueError:
+                print(f'Error value={col_val} in file : ', row_def)
+                col_val = 0
+            except decimal.InvalidOperation:
+                print(f'Error value={col_val} in file : ', row_def)
+                col_val = 0
             row_def[col_name] += col_val
         return row_def
 

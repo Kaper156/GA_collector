@@ -23,8 +23,11 @@ CSV_SUMMARIZE_PERIOD = 2
 ADDITIONAL_HEADERS = ["Week", "From", "To"]  # WARNING: change CsvHandler._set_additional_headers_ too
 
 # Encodings
-ENC_IN = 'windows-1251'
+ENC_IN = 'windows-1252'
 ENC_OUT = 'windows-1251'
+CSV_NULL_VALUES = [
+    'â€”',
+]
 
 DATE_OUT_FORMAT = "%Y.%m.%d"
 
