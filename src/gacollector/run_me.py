@@ -1,4 +1,5 @@
-from gacollector.collector.csv_collectors import CsvCollector, CsvSummarize
+from gacollector.collectors.overall import CsvCollector
+from gacollector.collectors.summarize import CsvSummarize
 from gacollector.connectors.google_sheets_api.main import Gsheet
 from gacollector.misc.comparer import get_undownloaded_urls
 from gacollector.misc.url_generator import generate_urls
