@@ -1,8 +1,9 @@
 import calendar
 import datetime
 
-from constant_values import TYPE_DAY, TYPE_WEEK, TYPE_MONTH
-from constant_values import tmpl_date1, tmpl_date2
+from gacollector.settings.constants import TEMPORARY_URLS_PATH
+from gacollector.settings.constants import TYPE_DAY, TYPE_WEEK, TYPE_MONTH
+from gacollector.settings.constants import tmpl_date1, tmpl_date2
 
 
 def add_month(date1):
@@ -57,7 +58,7 @@ def generate_urls(BASE_URL, FROM_DATE, TO_DATE, DATE_TYPE):
 
     date_generator = range_generator(FROM_DATE, TO_DATE, TYPES[DATE_TYPE])
 
-    with open("urls.txt", 'wt') as urls_file:
+    with open(TEMPORARY_URLS_PATH, 'wt') as urls_file:
         for date1, date2 in date_generator:
             new_url = put_dates(url_template, date1, date2)
             urls_file.write(f"{new_url}\n")

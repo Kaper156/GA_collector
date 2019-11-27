@@ -1,10 +1,9 @@
-from check_csv_and_url import get_undownloaded_urls
-from csv_collector import CsvCollector, CsvSummarize
-from gsheet import Gsheet
-# from compile import csv_out_gen_sum, csv_out_gen_increment, csv_out_uniq_line_items
-from sel_new import BrowserScenario
-from settings import *
-from url_generator import generate_urls
+from gacollector.collector.csv_collectors import CsvCollector, CsvSummarize
+from gacollector.connectors.google_sheets_api.main import Gsheet
+from gacollector.misc.comparer import get_undownloaded_urls
+from gacollector.misc.url_generator import generate_urls
+from gacollector.selen.scenario import BrowserScenario
+from gacollector.settings.settings import *
 
 if __name__ == '__main__':
     if LEVEL_WORK >= LW_GENERATE_URLS:
@@ -15,9 +14,8 @@ if __name__ == '__main__':
                       )
 
     # Читает ссылки из файла urls.txt
-    with open("urls.txt", "rt") as f:
+    with open(TEMPORARY_URLS_PATH, "rt") as f:
         urls = [l.strip() for l in f.readlines()]
-
     undownloaded_urls = urls.copy()
     if LEVEL_WORK >= LW_DOWNLOAD_GENERATED_URLS:
         # Создаем или проверяем папку для загурзки

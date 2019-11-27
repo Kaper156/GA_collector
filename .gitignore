@@ -1,8 +1,8 @@
 out/*
 
-urls.txt
+temp/urls.txt
 cookies.pkl
-!settings.py
-geckodriver.log
+!src/gacollector/settings/settings.py
+temp/geckodriver.log
 filters.txt
 line_items.txt

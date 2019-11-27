@@ -1,4 +1,3 @@
-# TODO test this
 class GoogleAuthPage:
     login_entry = 'input#identifierId'
 

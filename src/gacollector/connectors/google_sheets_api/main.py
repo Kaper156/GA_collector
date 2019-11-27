@@ -6,8 +6,8 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-from constant_values import ENC_OUT
-from constant_values import GSHEET_SCOPES, GSHEET_CREDS, GSHEET_TOKEN
+from gacollector.settings.constants import ENC_OUT
+from gacollector.settings.constants import GSHEET_SCOPES, GSHEET_CREDS, GSHEET_TOKEN
 
 
 class Gsheet:
@@ -17,7 +17,7 @@ class Gsheet:
 
     def auth(self):
         creds = None
-        # The file token.pickle stores the user's access and refresh tokens, and is
+        # The file user_token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
         if os.path.exists(GSHEET_TOKEN):

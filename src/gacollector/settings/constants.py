@@ -11,9 +11,18 @@ LW_DOWNLOAD_GENERATED_URLS = 3
 LW_COLLECT_RESULT = 2
 LW_SEND_TO_GOOGLE_SHEETS = 1
 
+# Urls
+TEMPORARY_URLS_PATH = "./temp/urls.txt"
+
 # Templates to be replaced by date in BASE_URL
 tmpl_date1 = "<!#@!1>"
 tmpl_date2 = "<!#@!2>"
+
+# Selenium firefox driver log
+GECKO_DRIVER_PATH = './src/bin/geckodriver.exe'
+FIREFOX_BINARY_PATH = "C:/Program Files/Mozilla Firefox/firefox.exe"
+GECKO_DRIVER_LOG_PATH = './temp/ff_driver.log'
+GA_COOKE_PATH = './usr/FFP_cookie/ga.pkl'
 
 # Enum of operations with csv-files
 CSV_OVERALL = 1
@@ -36,5 +45,5 @@ csv.register_dialect('ga',
                      quoting=csv.QUOTE_ALL, skipinitialspace=True)
 
 GSHEET_SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-GSHEET_TOKEN = 'token.pickle'
-GSHEET_CREDS = 'credentials.json'
+GSHEET_TOKEN = './usr/connectors/gsheet/user_token.pickle'
+GSHEET_CREDS = './usr/connectors/gsheet/app_credentials.json'

@@ -2,8 +2,8 @@ import base64
 import hashlib
 import os
 
-from check_csv_and_url import url_get_date
-from secret_settings import *
+from gacollector.misc.comparer import url_get_date
+from gacollector.settings.secret_settings import *
 
 
 def get_small_hash(value, d1: datetime.datetime, d2: datetime.datetime, DT: int):

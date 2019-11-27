@@ -5,11 +5,11 @@ import decimal
 import os
 from decimal import Decimal, DecimalException
 
-from check_csv_and_url import file_get_date
-from column_picker import ColumnPicker
-from constant_values import ADDITIONAL_HEADERS, CSV_NULL_VALUES
-from constant_values import DATE_OUT_FORMAT
-from constant_values import ENC_IN, ENC_OUT
+from gacollector.collector.column_picker import ColumnPicker
+from gacollector.misc.comparer import file_get_date
+from gacollector.settings.constants import ADDITIONAL_HEADERS, CSV_NULL_VALUES
+from gacollector.settings.constants import DATE_OUT_FORMAT
+from gacollector.settings.constants import ENC_IN, ENC_OUT
 
 
 class CsvCollector:

@@ -1,50 +1,20 @@
-# -*- coding: utf-8 -*
-import pickle
 import time
 
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, \
-    StaleElementReferenceException, ElementNotInteractableException, InvalidCookieDomainException
+from selenium.common.exceptions import StaleElementReferenceException, ElementNotInteractableException
+from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 # Import selector enums
-from page_selectors import GAPage
-
-
-class CookieKeeper:
-    __file_path__ = ''
-    __browser__ = None
-
-    def __init__(self, browser: webdriver.Firefox, file_path="cookies.pkl"):
-        self.__browser__ = browser
-        self.__file_path__ = file_path
-
-    def save_cookies(self):
-        with open(self.__file_path__, 'wb') as file:
-            pickle.dump(self.__browser__.get_cookies(), file)
-
-    def load_cookies(self):
-        cookies = None
-        try:
-            with open(self.__file_path__, 'rb') as file:
-                cookies = pickle.load(file)
-                for cookie in cookies:
-                    self.__browser__.add_cookie(cookie)
-                return True
-        except (EOFError, FileNotFoundError) as ex:
-            print("Cookie не найдены")
-            return False
-        except InvalidCookieDomainException as ex:
-            print(cookies)
-            raise ex
+from gacollector.selen.cookie_keeper import CookieKeeper
+from gacollector.selen.page_selectors import GAPage
+from gacollector.settings.constants import GECKO_DRIVER_PATH, GECKO_DRIVER_LOG_PATH, FIREFOX_BINARY_PATH
 
 
 class BrowserScenario:
-    __FIREFOX_BINARY_PATH__ = "C:/Program Files/Mozilla Firefox/firefox.exe"
-    __GECKO_DRIVER_PATH__ = './selenium_drv/geckodriver.exe'
 
     def __init__(self, download_dir, profile_path: str, is_authorization_needed=True):
         self.download_dir = download_dir
@@ -68,9 +38,9 @@ class BrowserScenario:
         caps = DesiredCapabilities.FIREFOX.copy()
         caps["firefox_profile"] = fp.encoded
         caps["marionette"] = True
-        self.browser = webdriver.Firefox(firefox_profile=fp, firefox_binary=self.__FIREFOX_BINARY_PATH__,
+        self.browser = webdriver.Firefox(firefox_profile=fp, firefox_binary=FIREFOX_BINARY_PATH,
                                          capabilities=caps,
-                                         executable_path=self.__GECKO_DRIVER_PATH__)
+                                         executable_path=GECKO_DRIVER_PATH, service_log_path=GECKO_DRIVER_LOG_PATH)
         self.browser.implicitly_wait(10)
         self.browser.set_script_timeout(10)
 
