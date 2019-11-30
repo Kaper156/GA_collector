@@ -46,17 +46,16 @@ TYPES = {
 }
 
 
-def generate_urls(BASE_URL, FROM_DATE, TO_DATE, DATE_TYPE):
-    if DATE_TYPE not in [TYPE_DAY, TYPE_WEEK, TYPE_MONTH]:
-        print("ТИП ПЕРИОДА НЕ ВЕРНЫЙ!!!!!!! ПОдставь из TYPE_DAY, TYPE_WEEK, TYPE_MONTH")
-        return
+def generate_urls(src_url, date_from, date_to, date_type):
+    if date_type not in [TYPE_DAY, TYPE_WEEK, TYPE_MONTH]:
+        raise ValueError("Incorrect date-range value, please select from: TYPE_DAY, TYPE_WEEK, TYPE_MONTH")
     import re
 
     url_template = re.sub(r"2\d{3}[0-1]\d[0-3]\d(&|&amp;)_u\.date01=2\d{3}[0-1]\d[0-3]\d",
-                          tmpl_date1 + "&_u.date01=" + tmpl_date2, BASE_URL)
+                          tmpl_date1 + "&_u.date01=" + tmpl_date2, src_url)
     urls = list()
 
-    date_generator = range_generator(FROM_DATE, TO_DATE, TYPES[DATE_TYPE])
+    date_generator = range_generator(date_from, date_to, TYPES[date_type])
 
     with open(TEMPORARY_URLS_PATH, 'wt') as urls_file:
         for date1, date2 in date_generator:
@@ -64,4 +63,3 @@ def generate_urls(BASE_URL, FROM_DATE, TO_DATE, DATE_TYPE):
             urls_file.write(f"{new_url}\n")
             # print(new_url)
             urls.append(new_url)
-    print(f"Созданно {len(urls)} ссылок")

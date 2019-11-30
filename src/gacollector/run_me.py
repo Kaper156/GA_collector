@@ -1,3 +1,5 @@
+from time import sleep
+
 from gacollector.collectors.overall import CsvCollector
 from gacollector.collectors.summarize import CsvSummarize
 from gacollector.connectors.google_sheets_api.main import Gsheet
@@ -9,9 +11,9 @@ from gacollector.settings.settings import *
 if __name__ == '__main__':
     if LEVEL_WORK >= LW_GENERATE_URLS:
         # Генерирует ссылки в файл urls.txt
-        generate_urls(BASE_URL=BASE_URL,
-                      FROM_DATE=FROM_DATE, TO_DATE=TO_DATE,
-                      DATE_TYPE=DATE_TYPE
+        generate_urls(src_url=BASE_URL,
+                      date_from=FROM_DATE, date_to=TO_DATE,
+                      date_type=DATE_TYPE
                       )
 
     # Читает ссылки из файла urls.txt
@@ -35,6 +37,7 @@ if __name__ == '__main__':
                 # Пока остаются ссылки
                 while len(undownloaded_urls):
                     print("Проверяю ссылки и файлы...")
+                    sleep(3)
                     undownloaded_urls = get_undownloaded_urls(urls, FOLDER_NAME)
                     print(f"Осталось ещё {len(undownloaded_urls)}")
                     cnt = 0
