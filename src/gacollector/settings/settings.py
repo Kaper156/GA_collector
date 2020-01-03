@@ -37,6 +37,19 @@ def generate_out_csv_path(folder_name, out_operation):
     return os.path.join(res_folder, name)
 
 
+def rise_to_the_root_dir():
+    import os
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    while True:
+        os.chdir(dname)
+        if 'src' not in dname:
+            break
+        dname = os.path.dirname(dname)
+        print(f"Current dir changed to: {os.getcwd()}")
+
+
+rise_to_the_root_dir()
 # Set default values
 LEVEL_WORK = LEVEL_WORK or LW_GENERATE_URLS
 FROM_DATE = FROM_DATE or datetime.datetime.strptime(url_get_date(BASE_URL)[0], '%Y%m%d')
