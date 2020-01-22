@@ -19,8 +19,8 @@ tmpl_date1 = "<!#@!1>"
 tmpl_date2 = "<!#@!2>"
 
 # Selenium firefox driver log
-GECKO_DRIVER_PATH = './src/bin/geckodriver.exe'
-FIREFOX_BINARY_PATH = "C:/Program Files/Mozilla Firefox/firefox.exe"
+GECKO_DRIVER_PATH = './src/bin/chromedriver.exe'
+FIREFOX_BINARY_PATH = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
 GECKO_DRIVER_LOG_PATH = './temp/ff_driver.log'
 GA_COOKE_PATH = './usr/FFP_cookie/ga.pkl'
 
@@ -36,8 +36,13 @@ ENC_IN = 'windows-1252'
 ENC_OUT = 'windows-1251'
 CSV_NULL_VALUES = [
     'â€”',
-]
+    # '—',
+    # '—',
+    # 'â€',
+    'â€',
 
+]
+#7 0 1 3 5
 DATE_OUT_FORMAT = "%Y.%m.%d"
 
 csv.register_dialect('ga',

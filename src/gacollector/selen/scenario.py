@@ -25,22 +25,32 @@ class BrowserScenario:
         self.cookie = None
 
     def run_browser(self):
-        fp = webdriver.FirefoxProfile(self.profile_path)
-        fp.set_preference('browser.download.folderList', 2)
-        fp.set_preference('browser.download.manager.showWhenStarting', False)
-        fp.set_preference('browser.download.dir', self.download_dir)
-        fp.set_preference('browser.download.useDownloadDir', True)
-        fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
-                          'text/plain, application/vnd.ms-excel, text/csv, text/comma-separated-values, '
-                          'application/octet-stream, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        fp.update_preferences()
+        # fp = webdriver.FirefoxProfile(self.profile_path)
+        # fp.set_preference('browser.download.folderList', 2)
+        # fp.set_preference('browser.download.manager.showWhenStarting', False)
+        # fp.set_preference('browser.download.dir', self.download_dir)
+        # fp.set_preference('browser.download.useDownloadDir', True)
+        # fp.set_preference('browser.helperApps.neverAsk.saveToDisk',
+        #                   'text/plain, application/vnd.ms-excel, text/csv, text/comma-separated-values, '
+        #                   'application/octet-stream, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        # fp.update_preferences()
+        #
+        # caps = DesiredCapabilities.FIREFOX.copy()
+        # caps["firefox_profile"] = fp.encoded
+        # caps["marionette"] = True
+        # self.browser = webdriver.Firefox(firefox_profile=fp, firefox_binary=FIREFOX_BINARY_PATH,
+        #                                  capabilities=caps,
+        #                                  executable_path=GECKO_DRIVER_PATH, service_log_path=GECKO_DRIVER_LOG_PATH)
+        opts = webdriver.chrome.options.Options()
+        opts.add_argument(f"user-data-dir={self.profile_path}")
+        from selenium.webdriver.chrome.service import Service
 
-        caps = DesiredCapabilities.FIREFOX.copy()
-        caps["firefox_profile"] = fp.encoded
-        caps["marionette"] = True
-        self.browser = webdriver.Firefox(firefox_profile=fp, firefox_binary=FIREFOX_BINARY_PATH,
-                                         capabilities=caps,
-                                         executable_path=GECKO_DRIVER_PATH, service_log_path=GECKO_DRIVER_LOG_PATH)
+        service = Service(GECKO_DRIVER_PATH)
+        service.start()
+        driver = webdriver.Remote(service.service_url)
+        time.sleep(5) # Let the user actually see something!
+
+        self.browser = webdriver.Chrome(executable_path=GECKO_DRIVER_PATH, chrome_options=opts,)
         self.browser.implicitly_wait(10)
         self.browser.set_script_timeout(10)
 
@@ -61,7 +71,7 @@ class BrowserScenario:
             self.is_authorization_needed = False
         self.cookie.load_cookies()
 
-    def __wait_for(self, target_css, timeout=15):
+    def __wait_for(self, target_css, timeout=60):
         wait = WebDriverWait(self.browser, timeout)
         return wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, target_css)))
 
@@ -113,7 +123,7 @@ class BrowserScenario:
     def get_week_data(self, url):
         self.browser.get(url)
         while True:
-            self.__wait_for(GAPage.main_frame)
+            self.__wait_for(GAPage.main_frame, 60)
             self.browser.switch_to_frame(self.browser.find_element_by_id(GAPage.main_frame_ID))
             self.__wait_while_visible(GAPage.alert_loading_ID)
             self.__get_page_data()

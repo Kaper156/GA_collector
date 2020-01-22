@@ -5,7 +5,7 @@ import os
 
 from gacollector.collectors.column_picker import ColumnPicker
 from gacollector.misc.comparer import file_get_date
-from gacollector.settings.constants import ADDITIONAL_HEADERS
+from gacollector.settings.constants import ADDITIONAL_HEADERS, CSV_NULL_VALUES
 from gacollector.settings.constants import DATE_OUT_FORMAT
 from gacollector.settings.constants import ENC_IN, ENC_OUT
 
@@ -23,7 +23,20 @@ class CsvCollector:
             additional_headers = self._get_additional_headers_for_file_(filename)
             for row in csv_rows:
                 row = self._set_additional_headers_(row, additional_headers)
-                writer.writerow(self._get_req_cols_(row))
+                for col in row.keys():
+                    # row[col] = row[col].encode(ENC_OUT, 'ignore').decode(ENC_OUT)
+                    for char in CSV_NULL_VALUES:
+                        row[col] =  row[col].replace(char, '')
+                # try:
+                try:
+                    writer.writerow(self._get_req_cols_(row))
+                except KeyError:
+                    #7 0 1 3 5
+                    print(filename)
+                    print(row)
+                    print(self._get_req_cols_(row))
+                # except
+
 
     def _get_req_cols_(self, row):
         return self.column_picker.pick_row_cols(row)
