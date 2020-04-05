@@ -21,22 +21,44 @@ class CsvCollector:
     def _handle_csv_files_rows_(self, writer):
         for filename, csv_rows in self._get_csv_readers_():
             additional_headers = self._get_additional_headers_for_file_(filename)
+            # if self.headers != csv_rows.fieldnames:
+            #     print(filename)
+            #     print(self.headers)
+            #     print(csv_rows.fieldnames)
+            #     print()
+            #     continue
+            checked = False
+            is_right = True
             for row in csv_rows:
+                if not checked:
+                    # for col_name in row.keys():
+                    #     # if col_name not in self.headers:
+                    #     #     print(filename)
+                    #     #     print(row.keys())
+                    #     #     print()
+                    #     #     is_right = False
+                    # if not is_right:
+                    #     break
+                    checked = True
                 row = self._set_additional_headers_(row, additional_headers)
                 for col in row.keys():
-                    # row[col] = row[col].encode(ENC_OUT, 'ignore').decode(ENC_OUT)
+                    row[col] = row[col].encode(ENC_OUT, 'ignore').decode(ENC_OUT)
                     for char in CSV_NULL_VALUES:
-                        row[col] =  row[col].replace(char, '')
+                        row[col] = row[col].replace(char, '')
                 # try:
                 try:
                     writer.writerow(self._get_req_cols_(row))
-                except KeyError:
-                    #7 0 1 3 5
+                # except KeyError:
+                #     # 7 0 1 3 5
+                #     print(filename)
+                #     print(row)
+                #     print(self._get_req_cols_(row))
+                except UnicodeEncodeError:
                     print(filename)
-                    print(row)
-                    print(self._get_req_cols_(row))
+                    continue
                 # except
 
+    # 7 6 0 2 4
 
     def _get_req_cols_(self, row):
         return self.column_picker.pick_row_cols(row)
@@ -107,4 +129,3 @@ class CsvCollector:
         for file_name in os.listdir(self.src_folder):
             file_path = os.path.join(self.src_folder, file_name)
             yield file_name, file_path
-
