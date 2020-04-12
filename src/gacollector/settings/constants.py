@@ -1,18 +1,13 @@
 import csv
-
-# Enum of date-range types
-TYPE_DAY = 1
-TYPE_WEEK = 7
-TYPE_MONTH = 30
-
-# Enum of level-of-work
-LW_GENERATE_URLS = 4
-LW_DOWNLOAD_GENERATED_URLS = 3
-LW_COLLECT_RESULT = 2
-LW_SEND_TO_GOOGLE_SHEETS = 1
+import re
 
 # Urls
 TEMPORARY_URLS_PATH = "./temp/urls.txt"
+
+# Regex
+reURL = re.compile(r"(2\d{3}[0-1]\d[0-3]\d)(?:&|&amp;)_u\.date01=(2\d{3}[0-1]\d[0-3]\d)")
+reFILE = re.compile(r"(2\d{3}[0-1]\d[0-3]\d)-(2\d{3}[0-1]\d[0-3]\d)")
+reFILE_DUPLICATE = re.compile(r"\(\d+\)")  # Ex. file(1).txt, ... , file(25).txt
 
 # Templates to be replaced by date in BASE_URL
 tmpl_date1 = "<!#@!1>"
@@ -24,25 +19,22 @@ FIREFOX_BINARY_PATH = "C:/Program Files/Mozilla Firefox/firefox.exe"
 GECKO_DRIVER_LOG_PATH = './temp/ff_driver.log'
 GA_COOKE_PATH = './usr/FFP_cookie/ga.pkl'
 
-# Enum of operations with csv-files
-CSV_OVERALL = 1
-CSV_SUMMARIZE_PERIOD = 2
-
 # Additional headers which included to out_csv
 ADDITIONAL_HEADERS = ["Week", "From", "To"]  # WARNING: change CsvHandler._set_additional_headers_ too
 
 # Encodings
 ENC_IN = 'windows-1252'
-ENC_OUT = 'windows-1251'
-CSV_NULL_VALUES = [
+# ENC_OUT = 'windows-1251'
+ENC_OUT = 'windows-1252'
+CSV_NULL_VALUES = (
     'â€”',
-    # '—',
-    # '—',
-    # 'â€',
+    '—',
+    '—',
     'â€',
-
-]
-#7 0 1 3 5
+    'â€',
+    '-',
+)
+# 7 0 1 3 5
 DATE_OUT_FORMAT = "%Y.%m.%d"
 
 csv.register_dialect('ga',

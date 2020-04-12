@@ -1,5 +1,5 @@
-from gacollector.collectors.overall import CsvCollector
-from gacollector.collectors.row_type_aggregator import RowTypeAggregator
+from gacollector.csv_utils.overall import CsvCollector
+from gacollector.csv_utils.row_type_aggregator import RowTypeAggregator
 
 
 class CsvSummarize(CsvCollector):
@@ -14,7 +14,7 @@ class CsvSummarize(CsvCollector):
         parse = RowTypeAggregator.get_row_default_values  # To convenience
 
         # Send csv files to parser, while them don't return def values
-        for _, csv_rows in super()._get_csv_readers_():
+        for _, csv_rows in super().get_csv_readers():
             # Parsed bad file will return None
             while self.row_defaults is None:
                 self.row_defaults = parse(next(csv_rows))
@@ -26,7 +26,7 @@ class CsvSummarize(CsvCollector):
         raise Exception("File do not contains rows, or all rows include blank values")
 
     def _handle_csv_files_rows_(self, writer):
-        for filename, csv_rows in self._get_csv_readers_():
+        for filename, csv_rows in self.get_csv_readers():
 
             file_row = self._get_default_row_()
 

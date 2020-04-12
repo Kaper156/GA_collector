@@ -1,22 +1,22 @@
 import os
-import re
 
-reURL = re.compile(r"(2\d{3}[0-1]\d[0-3]\d)(?:&|&amp;)_u\.date01=(2\d{3}[0-1]\d[0-3]\d)")
-reFILE = re.compile(r"(2\d{3}[0-1]\d[0-3]\d)-(2\d{3}[0-1]\d[0-3]\d)")
+from gacollector.settings.constants import reURL, reFILE
 
 
-def url_get_date(url):
-    return reURL.search(url).groups()
+class DateExtractor:
+    @classmethod
+    def url_get_date(cls, url):
+        return reURL.search(url).groups()
+
+    @classmethod
+    def file_get_date(cls, filename):
+        return reFILE.search(filename).groups()
 
 
-def file_get_date(filename):
-    return reFILE.search(filename).groups()
-
-
-def get_undownloaded_urls(urls, download_dir):
+def get_incorrect_files(urls, download_dir):
     result = list()
-    file_dates = ([file_get_date(file) for file in os.listdir(download_dir)])
+    file_dates = ([DateExtractor.file_get_date(file) for file in os.listdir(download_dir)])
     for url in urls:
-        if url_get_date(url) not in file_dates:
+        if DateExtractor.url_get_date(url) not in file_dates:
             result.append(url)
     return result

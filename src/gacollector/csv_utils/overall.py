@@ -3,9 +3,9 @@ import csv
 import datetime
 import os
 
-from gacollector.collectors.column_picker import ColumnPicker
-from gacollector.misc.comparer import file_get_date
-from gacollector.settings.constants import ADDITIONAL_HEADERS, CSV_NULL_VALUES
+from gacollector.csv_utils.column_picker import ColumnPicker
+from gacollector.misc.comparer import DateExtractor
+from gacollector.settings.constants import ADDITIONAL_HEADERS
 from gacollector.settings.constants import DATE_OUT_FORMAT
 from gacollector.settings.constants import ENC_IN, ENC_OUT
 
@@ -21,44 +21,9 @@ class CsvCollector:
     def _handle_csv_files_rows_(self, writer):
         for filename, csv_rows in self._get_csv_readers_():
             additional_headers = self._get_additional_headers_for_file_(filename)
-            # if self.headers != csv_rows.fieldnames:
-            #     print(filename)
-            #     print(self.headers)
-            #     print(csv_rows.fieldnames)
-            #     print()
-            #     continue
-            checked = False
-            is_right = True
             for row in csv_rows:
-                if not checked:
-                    # for col_name in row.keys():
-                    #     # if col_name not in self.headers:
-                    #     #     print(filename)
-                    #     #     print(row.keys())
-                    #     #     print()
-                    #     #     is_right = False
-                    # if not is_right:
-                    #     break
-                    checked = True
                 row = self._set_additional_headers_(row, additional_headers)
-                for col in row.keys():
-                    row[col] = row[col].encode(ENC_OUT, 'ignore').decode(ENC_OUT)
-                    for char in CSV_NULL_VALUES:
-                        row[col] = row[col].replace(char, '')
-                # try:
-                try:
-                    writer.writerow(self._get_req_cols_(row))
-                # except KeyError:
-                #     # 7 0 1 3 5
-                #     print(filename)
-                #     print(row)
-                #     print(self._get_req_cols_(row))
-                except UnicodeEncodeError:
-                    print(filename)
-                    continue
-                # except
-
-    # 7 6 0 2 4
+                writer.writerow(self._get_req_cols_(row))
 
     def _get_req_cols_(self, row):
         return self.column_picker.pick_row_cols(row)
@@ -71,7 +36,7 @@ class CsvCollector:
 
     def _get_additional_headers_for_file_(self, filename):
         # Warning rewrite it if additional headers changed
-        d1, d2 = file_get_date(filename)
+        d1, d2 = DateExtractor.file_get_date(filename)
         d1, d2 = [datetime.datetime.strptime(d, "%Y%m%d") for d in (d1, d2)]
         week = d2.strftime("%V")
         is_week = f'{d1.year}{week}'

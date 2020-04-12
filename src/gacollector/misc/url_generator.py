@@ -1,9 +1,9 @@
 import calendar
 import datetime
 
-from gacollector.settings.constants import TEMPORARY_URLS_PATH
-from gacollector.settings.constants import TYPE_DAY, TYPE_WEEK, TYPE_MONTH
+from gacollector.settings.constants import reURL
 from gacollector.settings.constants import tmpl_date1, tmpl_date2
+from gacollector.settings.enums import PeriodEnum
 
 
 def add_month(date1):
@@ -40,26 +40,23 @@ def range_generator(d_from, d_to, incr_function):
 
 
 TYPES = {
-    TYPE_DAY: add_day,
-    TYPE_WEEK: add_week,
-    TYPE_MONTH: add_month
+    PeriodEnum.DAY: add_day,
+    PeriodEnum.WEEK: add_week,
+    PeriodEnum.MONTH: add_month
 }
 
 
-def generate_urls(src_url, date_from, date_to, date_type):
-    if date_type not in [TYPE_DAY, TYPE_WEEK, TYPE_MONTH]:
+# TODO make as list
+def generate_urls(src_url, date_from, date_to, date_type: PeriodEnum):
+    if date_type not in PeriodEnum:
         raise ValueError("Incorrect date-range value, please select from: TYPE_DAY, TYPE_WEEK, TYPE_MONTH")
-    import re
 
-    url_template = re.sub(r"2\d{3}[0-1]\d[0-3]\d(&|&amp;)_u\.date01=2\d{3}[0-1]\d[0-3]\d",
-                          tmpl_date1 + "&_u.date01=" + tmpl_date2, src_url)
-    urls = list()
+    # url_template = re.sub(URL_REGEX, tmpl_date1 + "&_u.date01=" + tmpl_date2, src_url)
+    url_template = reURL.sub(tmpl_date1 + "&_u.date01=" + tmpl_date2, src_url)
 
     date_generator = range_generator(date_from, date_to, TYPES[date_type])
 
-    with open(TEMPORARY_URLS_PATH, 'wt') as urls_file:
-        for date1, date2 in date_generator:
-            new_url = put_dates(url_template, date1, date2)
-            urls_file.write(f"{new_url}\n")
-            # print(new_url)
-            urls.append(new_url)
+    # with open(TEMPORARY_URLS_PATH, 'wt') as urls_file:
+    for date1, date2 in date_generator:
+        new_url = put_dates(url_template, date1, date2)
+        yield new_url

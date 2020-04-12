@@ -2,7 +2,7 @@ import base64
 import hashlib
 import os
 
-from gacollector.misc.comparer import url_get_date
+from gacollector.misc.comparer import DateExtractor
 from gacollector.settings.secret_settings import *
 
 
@@ -26,7 +26,7 @@ def generate_folder_name(url, d_from, d_to, d_type):
 
 def generate_out_csv_path(folder_name, out_operation):
     name = f'Results_{os.path.basename(folder_name)}'
-    if out_operation == CSV_SUMMARIZE_PERIOD:
+    if out_operation == CsvOutOpEnum.SUMMARIZE_PERIOD:
         name += '__total_sum.csv'
     else:
         name += '__aggregated_rows.csv'
@@ -51,10 +51,10 @@ def rise_to_the_root_dir():
 
 rise_to_the_root_dir()
 # Set default values
-LEVEL_WORK = LEVEL_WORK or LW_GENERATE_URLS
-FROM_DATE = FROM_DATE or datetime.datetime.strptime(url_get_date(BASE_URL)[0], '%Y%m%d')
+LEVEL_WORK = LEVEL_WORK or LevelWorkEnum.GENERATE_URLS
+FROM_DATE = FROM_DATE or datetime.datetime.strptime(DateExtractor.url_get_date(BASE_URL)[0], '%Y%m%d')
 TO_DATE = TO_DATE or datetime.datetime.now()
 FOLDER_NAME = FOLDER_NAME or generate_folder_name(BASE_URL, FROM_DATE, TO_DATE, DATE_TYPE)
-OUT_OPERATION = OUT_OPERATION or CSV_OVERALL
+OUT_OPERATION = OUT_OPERATION or CsvOutOpEnum.OVERALL
 OUT_CSV_PATH = OUT_CSV_PATH or generate_out_csv_path(FOLDER_NAME, OUT_OPERATION)
 GSHEET_RANGE = GSHEET_RANGE or 'A1'
