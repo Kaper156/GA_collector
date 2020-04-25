@@ -14,17 +14,19 @@ from .base import Task
 
 class DownloadTask(Task):
     def __init__(self, base_url, date_from=None, date_to=None, period=PeriodEnum.MONTH,
-                 folder_to_download=None, force_delete_bad_headers=False):
-        if folder_to_download is None:
-            folder_to_download = self.__generate_folder_name__()
+                 folder_path=None, force_delete_bad_headers=False):
+
 
         self.base_url = base_url
         self.date_from = date_from or datetime.datetime.strptime(DateExtractor.url_get_date(base_url)[0], '%Y%m%d')
         self.date_to = date_to or datetime.datetime.now()
         self.period = period
 
+        if folder_path is None:
+            folder_path = self.__generate_folder_name__()
+
         self.folder_to_download = None
-        self.select_folder(folder_to_download)
+        self.select_folder(folder_path)
         # TODO chenge delete bad headers to move in thrash_folder
         self.file_checker = CsvFileChecker(self.folder_to_download, force_delete_bad_headers)
 

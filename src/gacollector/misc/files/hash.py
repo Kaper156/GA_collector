@@ -30,7 +30,7 @@ def get_hashed_string(values):
 
 
 def get_small_hash(value, d1: datetime.datetime, d2: datetime.datetime, DT: int):
-    value += str(d1.timestamp()) + str(d2.timestamp()) + str(DT)
+    value += str(d1) + str(d2) + str(DT)
     d = hashlib.md5(value.encode('utf-8')).digest()
     d = base64.b64encode(d)
     h = str(d.decode('utf-8'))[:10]

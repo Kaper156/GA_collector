@@ -18,6 +18,7 @@ class CsvTask(Task):
         for filename, csv_reader in self.csv_set.get_csv_readers():
             self.collect_rows(filename=filename, input_csv=csv_reader)
         self.csv_set.close()
+        print(f'File {self.out_file_path} is ready')
 
     @abstractmethod
     def collect_rows(self, filename, input_csv):
