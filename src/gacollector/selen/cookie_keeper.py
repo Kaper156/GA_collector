@@ -3,7 +3,7 @@ import pickle
 from selenium import webdriver
 from selenium.common.exceptions import InvalidCookieDomainException
 
-from gacollector.settings.constants import GA_COOKE_PATH
+from gacollector.config.constants import GA_COOKE_PATH
 
 
 class CookieKeeper:

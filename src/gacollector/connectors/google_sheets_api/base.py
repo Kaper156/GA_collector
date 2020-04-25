@@ -6,8 +6,8 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-from gacollector.settings.constants import ENC_OUT
-from gacollector.settings.constants import GSHEET_SCOPES, GSHEET_CREDS, GSHEET_TOKEN
+from gacollector.config.constants import ENC_OUT
+from gacollector.config.constants import GSHEET_SCOPES, GSHEET_CREDS, GSHEET_TOKEN
 
 
 class Gsheet:
@@ -54,7 +54,8 @@ class Gsheet:
         print(result)
         return result.get('updates').get('updatedRows')
 
-    def send_from_csv(self, path_to_csv, spreadsheet_id, range_name):
+    def send_from_csv(self, path_to_csv, spreadsheet_id, range_name=None):
+        range_name = range_name or 'A1'
         with open(path_to_csv, 'r', encoding=ENC_OUT) as f:
             reader = csv.reader(f, dialect='ga')
             values = list(reader)

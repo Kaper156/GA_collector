@@ -19,6 +19,10 @@ FIREFOX_BINARY_PATH = "C:/Program Files/Mozilla Firefox/firefox.exe"
 GECKO_DRIVER_LOG_PATH = './temp/ff_driver.log'
 GA_COOKE_PATH = './usr/FFP_cookie/ga.pkl'
 
+# Set the firefox profile for downloading csv via Selenium
+# !Please, use only this backslashes: '/'
+PROFILE_PATH = "./usr/FFP"
+
 # Additional headers which included to out_csv
 ADDITIONAL_HEADERS = ["Week", "From", "To"]  # WARNING: change CsvHandler._set_additional_headers_ too
 

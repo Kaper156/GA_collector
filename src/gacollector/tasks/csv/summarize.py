@@ -1,5 +1,5 @@
-from gacollector.csv_utils.additional_headers import get_additional_fields_for_file
-from gacollector.csv_utils.row_type_aggregator import RowTypeAggregator
+from gacollector.misc.csv.helpers import get_additional_fields_for_file
+from gacollector.misc.csv.row_type_aggregator import RowTypeAggregator
 from gacollector.tasks.csv.base import CsvTask
 
 

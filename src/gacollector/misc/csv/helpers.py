@@ -1,7 +1,7 @@
 import datetime
 
-from gacollector.misc.comparer import DateExtractor
-from gacollector.settings.constants import DATE_OUT_FORMAT
+from gacollector.config.constants import DATE_OUT_FORMAT
+from gacollector.misc.date.extractor import DateExtractor
 
 
 def get_additional_fields_for_file(filename):

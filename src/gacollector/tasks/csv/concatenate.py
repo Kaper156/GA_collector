@@ -1,6 +1,6 @@
 import csv
 
-from gacollector.csv_utils.additional_headers import get_additional_fields_for_file
+from gacollector.misc.csv.helpers import get_additional_fields_for_file
 from gacollector.tasks.csv.base import CsvTask
 
 

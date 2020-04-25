@@ -1,8 +1,8 @@
 import os
 
-from gacollector.csv_utils.csv_set import CsvSet
-from gacollector.misc.comparer import DateExtractor
-from gacollector.misc.helpers import duplicate_check
+from gacollector.misc.csv.csv_set import CsvSet
+from gacollector.misc.date.extractor import DateExtractor
+from gacollector.misc.files.helpers import duplicate_check
 
 
 class CsvFileChecker:

@@ -2,8 +2,8 @@ import decimal
 from _pydecimal import Decimal, DecimalException
 from collections import OrderedDict
 
-from gacollector.csv_utils.csv_set import CsvSet
-from gacollector.settings.constants import CSV_NULL_VALUES, ADDITIONAL_HEADERS
+from gacollector.config.constants import CSV_NULL_VALUES, ADDITIONAL_HEADERS
+from gacollector.misc.csv.csv_set import CsvSet
 
 
 class RowTypeAggregator:
@@ -29,18 +29,6 @@ class RowTypeAggregator:
         except ValueError:
             return str('-')
 
-    # @staticmethod
-    # def try_parse_default_values(row: OrderedDict):
-    #     if (None in row.values()) or ('-' in row.values()) or ('' in row.values()):
-    #         return 'Blank', True
-    #     for col in row.keys():
-    #         val = row[col]
-    #
-    #
-    # @staticmethod
-    # def get_row_default_values(row: OrderedDict):
-    #     return OrderedDict(RowTypeAggregator.try_parse_default_values(row))
-    #
     @staticmethod
     def get_default_values_in_set(csv_set: CsvSet):
         # ! Work only when all the files have the same headers

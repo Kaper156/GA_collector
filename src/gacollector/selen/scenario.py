@@ -8,10 +8,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from gacollector.config.constants import GECKO_DRIVER_PATH, GECKO_DRIVER_LOG_PATH, FIREFOX_BINARY_PATH
 # Import selector enums
 from gacollector.selen.cookie_keeper import CookieKeeper
 from gacollector.selen.page_selectors import GAPage
-from gacollector.settings.constants import GECKO_DRIVER_PATH, GECKO_DRIVER_LOG_PATH, FIREFOX_BINARY_PATH
 
 
 class BrowserScenario:

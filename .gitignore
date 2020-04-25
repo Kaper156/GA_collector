@@ -2,7 +2,7 @@ out/*
 
 temp/urls.txt
 cookies.pkl
-!src/gacollector/settings/settings.py
+!src/gacollector/config/settings.py
 temp/geckodriver.log
 filters.txt
 line_items.txt

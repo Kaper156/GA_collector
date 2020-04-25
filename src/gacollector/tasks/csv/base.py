@@ -1,8 +1,8 @@
 import os
 from abc import abstractmethod
 
-from ..base import Task
-from ...csv_utils.csv_set import CsvSet
+from gacollector.misc.csv.csv_set import CsvSet
+from gacollector.tasks.base import Task
 
 
 class CsvTask(Task):

@@ -37,5 +37,5 @@ class LevelWorkEnum(OrderedEnum):
 
 
 class CsvOutOpEnum(Enum):
-    OVERALL = 1
-    SUMMARIZE_PERIOD = 2
+    CONCATENATE = 1
+    SUMMARIZE = 2

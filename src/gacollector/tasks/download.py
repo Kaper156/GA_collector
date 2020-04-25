@@ -2,14 +2,14 @@ import datetime
 import os
 from time import sleep
 
+from gacollector.config.constants import PROFILE_PATH
+from gacollector.config.enums import PeriodEnum
+from gacollector.misc.checker import CsvFileChecker
+from gacollector.misc.date.extractor import DateExtractor
+from gacollector.misc.files.hash import generate_folder_name
+from gacollector.misc.urls.generator import UrlGenerator
+from gacollector.selen.scenario import BrowserScenario
 from .base import Task
-from ..checkers.base import CsvFileChecker
-from ..misc.comparer import DateExtractor
-from ..misc.folder_name import generate_folder_name
-from ..misc.url_generator import generate_urls
-from ..selen.scenario import BrowserScenario
-from ..settings.enums import PeriodEnum
-from ..settings.secret_settings import PROFILE_PATH
 
 
 class DownloadTask(Task):
@@ -29,7 +29,7 @@ class DownloadTask(Task):
         self.file_checker = CsvFileChecker(self.folder_to_download, force_delete_bad_headers)
 
         # After any change must be None
-        self.__all_urls__ = list(generate_urls(self.base_url, self.date_from, self.date_to, self.period))
+        self.__all_urls__ = list(UrlGenerator.generate_urls(self.base_url, self.date_from, self.date_to, self.period))
 
         # List of file_name, abs_file_path
         self.__files__ = list()

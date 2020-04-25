@@ -1,9 +1,9 @@
 import codecs
 import csv
 
-from gacollector.csv_utils.column_picker import ColumnPicker
-from gacollector.misc.get_csv_from_folder import gen_csv_files_from_folder
-from gacollector.settings.constants import ENC_IN, ENC_OUT
+from gacollector.config.constants import ENC_IN, ENC_OUT
+from gacollector.misc.csv.column_picker import ColumnPicker
+from gacollector.misc.files.helpers import gen_csv_files_from_folder
 
 
 class CsvSet:

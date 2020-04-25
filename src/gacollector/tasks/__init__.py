@@ -1,3 +1,3 @@
 from .csv import SummarizeCsvTask, ConcatenateCsvTask
 from .download import DownloadTask
-from .facade import TaskFacade
+from .facade import TaskFacade, LastWeekTaskFacade

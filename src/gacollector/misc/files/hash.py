@@ -3,7 +3,30 @@ import datetime
 import hashlib
 import os
 
-from gacollector.settings.enums import PeriodEnum
+from gacollector.config.enums import PeriodEnum
+
+
+def hash_string(value):
+    d = hashlib.md5(value.encode('utf-8')).digest()
+    d = base64.b64encode(d)
+    h = str(d.decode('utf-8'))[:10]
+    h = h.replace('/', '')
+    h = h.replace(',', '')
+    h = h.replace('\\', '')
+    return h
+
+
+def get_hashed_string(values):
+    from collections.abc import Iterable
+    if type(values) is dict:
+        # is dict
+        values = values.values()
+    elif not isinstance(values, Iterable):
+        # is not iterable
+        raise TypeError('Values must be iterable! Now they are: %s' % str(type(values)))
+    # Some actions with values
+    string = ''.join(map(str, values))
+    return hash_string(string)
 
 
 def get_small_hash(value, d1: datetime.datetime, d2: datetime.datetime, DT: int):
